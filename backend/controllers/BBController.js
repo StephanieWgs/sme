@@ -20,7 +20,7 @@ exports.getAllBB = async (req, res) => {
   try {
     //-1 = Z → A, 10 → 1, Terbaru → Terlama
     // 1 = A → Z, 1 → 10, Terlama → Terbaru
-    const BBs = await BB.find().sort({ createdAt: -1 });
+    const BBs = await BB.find().sort({ createdAt: -1 }).populate("jenisBB");
     res.status(200).json(BBs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -31,7 +31,7 @@ exports.getAllBB = async (req, res) => {
 exports.getBBById = async (req, res) => {
   try {
     const { id } = req.params;
-    const BBById = await BB.findById(id);
+    const BBById = await BB.findById(id).populate("jenisBB");
     if (!BBById) return res.status(404).json({ error: "BB not found" });
     res.status(200).json(BBById);
   } catch (error) {

@@ -18,7 +18,7 @@ exports.createJenisBB = async (req, res) => {
 // Get all jenisBB
 exports.getAllJenisBB = async (req, res) => {
   try {
-    const jenisBBs = await jenisBB.find();
+    const jenisBBs = await jenisBB.find().sort({ createdAt: -1 });
     res.status(200).json(jenisBBs);
   } catch (error) {
     res.status(500).json({ error: error.message });

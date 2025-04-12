@@ -24,7 +24,7 @@ exports.createPembelian = async (req, res) => {
 // Get all pembelian
 exports.getAllPembelian = async (req, res) => {
   try {
-    const pembelianList = await Pembelian.find().populate("kodeSupplier").populate("detailPembelian.kodeBB");
+    const pembelianList = await Pembelian.find().sort({ createdAt: -1 }).populate("kodeSupplier").populate("detailPembelian.kodeBB");
     res.status(200).json(pembelianList);
   } catch (error) {
     res.status(500).json({ error: error.message });
