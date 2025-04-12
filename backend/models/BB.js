@@ -70,8 +70,6 @@ bbSchema.methods.statusStock = function () {
   } else {
     return STATUS_NEED_RESTOCK;
   }
-
-  return STATUS_NEED_RESTOCK;
 };
 
 // Middleware sebelum saving

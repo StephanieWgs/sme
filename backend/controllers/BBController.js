@@ -69,3 +69,23 @@ exports.deleteBB = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+//Add Stok BB
+exports.addStokBB = async (kodeBB, qty) => {
+  const bb = await BB.findOne({ kodeBB: kodeBB });
+  if (bb) {
+    bb.stok += qty;
+    const updatedBB = await bb.save();
+    return updatedBB;
+  }
+};
+
+//Reduce Stok BB
+exports.reduceStokBB = async (kodeBB, qty) => {
+  const bb = await BB.findOne({ kodeBB: kodeBB });
+  if (bb) {
+    bb.stok -= qty;
+    const updatedBB = await bb.save();
+    return updatedBB;
+  }
+};
