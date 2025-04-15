@@ -7,6 +7,7 @@ const BBRoutes = require("./routes/BBRoutes");
 const jenisBBRoutes = require("./routes/jenisBBRoutes");
 const pembelianRoutes = require("./routes/pembelianRoutes");
 const supplierRoutes = require("./routes/supplierRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +30,7 @@ app.use("/api/BB", BBRoutes);
 app.use("/api/jenisBB", jenisBBRoutes);
 app.use("/api/pembelian", pembelianRoutes);
 app.use("/api/supplier", supplierRoutes);
+app.use("/api/customer", customerRoutes);
 
 //Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
