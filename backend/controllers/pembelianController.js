@@ -66,7 +66,7 @@ exports.updatePembelian = async (req, res) => {
 
     // 3. Tambahkan stok baru
     for (const item of updatedPembelian.detailPembelian) {
-      await addStokBB(item.kodeBB, item.qty, item.hargaBeli);
+      await addStokBB(item.kodeBB, item.qty);
     }
 
     res.status(200).json({
