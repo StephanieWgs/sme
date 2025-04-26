@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const penjualanController = require("../controllers/penjualanController");
 
+//Middleware
+const authMiddleware = require('../middlewares/authMiddleware'); 
+router.use(authMiddleware);
+
 // Routes untuk mendapatkan semua penjualan
 router.get("/", penjualanController.getAllPenjualan);
 

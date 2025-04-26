@@ -1,0 +1,14 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #f4f4f4;
+}
+
+.box-area {
+  height: 420px;
+  width: 840px;
+}
+
+#toast-container {
+  z-index: 9999999;
+}
+

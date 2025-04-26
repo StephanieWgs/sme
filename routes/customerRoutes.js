@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const customerController = require("../controllers/customerController");
 
+//Middleware
+const authMiddleware = require('../middlewares/authMiddleware'); 
+router.use(authMiddleware);
+
 // Routes untuk mendapatkan semua customer
 router.get("/", customerController.getAllCustomer);
 
