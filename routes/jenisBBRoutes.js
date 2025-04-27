@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 const jenisBBController = require("../controllers/jenisBBController");
 
-//Middleware
-const authMiddleware = require('../middlewares/authMiddleware'); 
-router.use(authMiddleware);
-
 // Routes untuk mendapatkan semua jenisBB
 router.get("/", jenisBBController.getAllJenisBB);
 

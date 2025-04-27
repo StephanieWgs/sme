@@ -1,7 +1,12 @@
 const express = require("express");
+const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 require("dotenv").config();
 
 const BBRoutes = require("./routes/BBRoutes");
@@ -12,7 +17,9 @@ const supplierRoutes = require("./routes/supplierRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const authRoutes = require("./routes/authRoutes");
 
-const app = express();
+const authMiddleware = require("./middlewares/authMiddleware"); // Import authMiddleware
+
+//Port
 const PORT = process.env.PORT || 5000;
 
 //Koneksi ke database
@@ -27,6 +34,7 @@ app.use(express.static("public"));
 
 //Middleware
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 
 //Database connection
@@ -53,7 +61,7 @@ app.get("/", (req, res) => {
 });
 
 // Rute untuk halaman Dashboard
-app.get("/dashboard", (req, res) => {
+app.get("/dashboard", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Dashboard",
     body: "dashboard",
@@ -62,55 +70,55 @@ app.get("/dashboard", (req, res) => {
 });
 
 // Rute untuk halaman Produk
-app.get("/produk", (req, res) => {
+app.get("/produk", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Produk",
-    body: 'produk',
+    body: "produk",
     activePage: "produk",
   });
 });
 
 // Rute untuk halaman Penjualan
-app.get("/penjualan", (req, res) => {
+app.get("/penjualan", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Penjualan",
-    body: 'penjualan',
+    body: "penjualan",
     activePage: "penjualan",
   });
 });
 
 // Rute untuk halaman Pembelian
-app.get("/pembelian", (req, res) => {
+app.get("/pembelian", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Pembelian",
-    body: 'pembelian',
+    body: "pembelian",
     activePage: "pembelian",
   });
 });
 
 // Rute untuk halaman Customer
-app.get("/customer", (req, res) => {
+app.get("/customer", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Customer",
-    body: 'customer',
+    body: "customer",
     activePage: "customer",
   });
 });
 
 // Rute untuk halaman Supplier
-app.get("/supplier", (req, res) => {
+app.get("/supplier", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Supplier",
-    body: 'supplier',
+    body: "supplier",
     activePage: "supplier",
   });
 });
 
 // Rute untuk halaman user
-app.get("/user", (req, res) => {
+app.get("/user", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "User",
-    body: 'user',
+    body: "user",
     activePage: "user",
   });
 });

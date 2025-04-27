@@ -3,7 +3,7 @@
 const { verifyToken } = require("../config/auth");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  const token = req.cookies.token; // Ambil token dari cookie, jika ada
   if (!token) {
     return res.redirect("/");
   }

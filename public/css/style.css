@@ -14,7 +14,7 @@ body {
 
 .btn-menu {
   background-color: transparent;
-  color: #a4a4a4;
+  color: #747474;
 }
 
 .btn-menu:hover {
@@ -48,5 +48,5 @@ aside {
 
 .main-content {
   flex-grow: 1; /* Mengambil sisa ruang */
-  padding: 20px;
+  padding: 30px;
 }

@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 const supplierController = require("../controllers/supplierController");
 
-//Middleware
-const authMiddleware = require('../middlewares/authMiddleware'); 
-router.use(authMiddleware);
-
 // Routes untuk mendapatkan semua supplier
 router.get("/", supplierController.getAllSupplier);
 

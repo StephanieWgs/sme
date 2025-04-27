@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 const BBController = require("../controllers/BBController");
 
-//Middleware
-const authMiddleware = require('../middlewares/authMiddleware'); 
-router.use(authMiddleware);
-
 // Routes untuk mendapatkan semua BB
 router.get("/", BBController.getAllBB);
 
