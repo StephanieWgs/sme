@@ -10,8 +10,7 @@
     <thead>
       <tr>
         <th scope="col" class="text-center" style="width: 50px">No.</th>
-        <th scope="col">Username</th>
-        <th scope="col" class="text-center" style="width: 200px">Role</th>
+        <th scope="col">Jenis Produk</th>
         <th scope="col" class="text-center" style="width: 200px">Aksi</th>
       </tr>
     </thead>
@@ -19,29 +18,18 @@
   </table>
   <!-- End Tabel -->
 
-  <!-- Modal untuk menambah user -->
+  <!-- Modal untuk menambah jenisBB -->
   <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editTaskModalLabel">Tambah User</h5>
+          <h5 class="modal-title" id="editTaskModalLabel">Tambah Jenis Produk</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="input-group mb-4">
-            <span class="input-group-text fw-semibold" style="width: 120px">Username</span>
-            <input type="text" id="username" class="form-control" required />
-          </div>
-          <div class="input-group mb-4">
-            <span class="input-group-text fw-semibold" style="width: 120px">Password</span>
-            <input type="text" id="password" class="form-control" required />
-          </div>
-          <div class="input-group mb-4">
-            <span class="input-group-text fw-semibold" style="width: 120px">Role</span>
-            <select class="form-select" id="role">
-              <option value="Staff">Staff</option>
-              <option value="Admin">Admin</option>
-            </select>
+            <span class="input-group-text fw-semibold" style="width: 120px">Jenis Produk</span>
+            <input type="text" id="jenisBB" class="form-control" required />
           </div>
         </div>
         <div class="modal-footer">
@@ -53,25 +41,18 @@
   </div>
   <!-- End Modal -->
 
-  <!-- Modal untuk edit user -->
+  <!-- Modal untuk edit jenisBB -->
   <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editTaskModalLabel">Edit User</h5>
+          <h5 class="modal-title" id="editTaskModalLabel">Edit Jenis Produk</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="input-group mb-4">
-            <span class="input-group-text fw-semibold" style="width: 120px">Username</span>
-            <input type="text" id="editUsername" class="form-control" required disabled />
-          </div>
-          <div class="input-group mb-4">
-            <span class="input-group-text fw-semibold" style="width: 120px">Role</span>
-            <select class="form-select" id="editRole">
-              <option value="Staff">Staff</option>
-              <option value="Admin">Admin</option>
-            </select>
+            <span class="input-group-text fw-semibold" style="width: 120px">Jenis Produk</span>
+            <input type="text" id="editJenisBB" class="form-control" required />
           </div>
         </div>
         <div class="modal-footer">
@@ -88,10 +69,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editTaskModalLabel">Hapus User</h5>
+          <h5 class="modal-title" id="editTaskModalLabel">Hapus Jenis Produk</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">Apakah Anda yakin ingin menghapus user ini?</div>
+        <div class="modal-body">Apakah Anda yakin ingin menghapus jenis produk ini?</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           <button type="button" class="btn btn-danger" onclick="hapus()">Hapus</button>
@@ -111,7 +92,7 @@
   // Fungsi untuk menampilkan modal edit
   async function showEditModal(id) {
     try {
-      const response = await fetch(`/api/auth/${id}`, {
+      const response = await fetch(`/api/jenisBB/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -122,8 +103,7 @@
         const data = await response.json();
 
         // Mengisi field dengan data dari API
-        document.getElementById("editUsername").value = data.username;
-        document.getElementById("editRole").value = data.role;
+        document.getElementById("editJenisBB").value = data.jenisBB;
 
         // Menyimpan ID yang sedang diedit
         currentId = id;
@@ -131,39 +111,34 @@
         // Menampilkan modal
         new bootstrap.Modal(document.getElementById("modalEdit")).show();
       } else {
-        console.error("Gagal mendapatkan data user");
+        console.error("Gagal mendapatkan data jenis produk");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
-  // Fungsi untuk menampilkan modal hapus
+  // Fungsi untuk menampilkan modal hapus tugas
   function showDeleteModal(id) {
     currentId = id;
     new bootstrap.Modal(document.getElementById("modalHapus")).show();
   }
 
-  // Tambah user
+  // Tambah jenisBB
   async function tambah() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
-
+    const jenisBB = document.getElementById("jenisBB").value;
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/jenisBB", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password, role }),
+        body: JSON.stringify({ jenisBB: jenisBB }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        document.getElementById("username").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("role").value = "Staff";
+        document.getElementById("jenisBB").value = "";
         const modalTambah = bootstrap.Modal.getInstance(document.getElementById("modalTambah"));
         modalTambah.hide();
         load();
@@ -173,20 +148,17 @@
     }
   }
 
-  // Edit user
+  // Edit jenisBB
   async function edit() {
-    const username = document.getElementById("editUsername").value;
-    const role = document.getElementById("editRole").value;
-
-    console.log("Current ID:", currentId); // Pastikan ID sudah terisi dengan benar
+    const jenisBB = document.getElementById("editJenisBB").value;
 
     try {
-      const response = await fetch(`/api/auth/${currentId}`, {
+      const response = await fetch(`/api/jenisBB/${currentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, role }),
+        body: JSON.stringify({ jenisBB }),
       });
 
       if (response.ok) {
@@ -200,10 +172,10 @@
     }
   }
 
-  // Hapus user
+  // Hapus jenisBB
   async function hapus() {
     try {
-      const response = await fetch(`/api/auth/${currentId}`, {
+      const response = await fetch(`/api/jenisBB/${currentId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -221,47 +193,45 @@
     }
   }
 
-  // Tampilkan semua data
   async function load() {
     // const token = localStorage.getItem("token");
     try {
-      const response = await fetch("/api/auth/user", {
+      const response = await fetch("/api/jenisBB", {
         method: "GET",
       });
 
       const data = await response.json();
       const list = document.getElementById("list");
 
-      // Jika tidak ada user
+      // Jika tidak ada jenis produk
       if (!data || data.length === 0) {
-        list.innerHTML = "<tr><td colspan='4' class='text-center'>Tidak ada user yang terdaftar...</td></tr>";
+        list.innerHTML = "<tr><td colspan='3' class='text-center'>Tidak ada jenis produk yang terdaftar...</td></tr>";
         return;
       }
 
-      // Jika ada user
+      // Jika ada jenis produk
       list.innerHTML = data
-        .map((users, index) => {
+        .map((jenisBBs, index) => {
           return `
-                <tr>
-                    <td class="text-center">${index + 1}</td>
-                    <td>${users.username}</td>
-                    <td class="text-center">${users.role}</td>
-                    <td class="text-center">
-                        <button class="btn btn-warning btn-sm" onclick="showEditModal('${users._id}')">
-                            <i class="bi bi-pencil"></i> Edit
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${users._id}')">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `;
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td>${jenisBBs.jenisBB}</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning btn-sm" onclick="showEditModal('${jenisBBs._id}')">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${jenisBBs._id}')">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
         })
         .join("");
     } catch (error) {
       document.getElementById("list").innerHTML = `
-            <tr><td colspan='4' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>
-        `;
+                <tr><td colspan='4' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>
+            `;
     }
   }
   // Panggil fungsi load saat halaman selesai dimuat

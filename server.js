@@ -78,6 +78,15 @@ app.get("/produk", authMiddleware, (req, res) => {
   });
 });
 
+// Rute untuk halaman jenisBB
+app.get("/jenisBB", authMiddleware, (req, res) => {
+  res.render("layout", {
+    title: "Jenis Produk",
+    body: "jenisBB",
+    activePage: "jenisBB",
+  });
+});
+
 // Rute untuk halaman Penjualan
 app.get("/penjualan", authMiddleware, (req, res) => {
   res.render("layout", {

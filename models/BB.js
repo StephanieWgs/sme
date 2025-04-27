@@ -39,7 +39,6 @@ const bbSchema = new mongoose.Schema({
   },
   safetyStock: {
     type: Number,
-    required: true,
   },
   status: {
     type: String,

@@ -1,10 +1,10 @@
-const jenisBB = require("../models/jenisBB");
+const JenisBB = require("../models/jenisBB");
 
 // Create jenisBB
 exports.createJenisBB = async (req, res) => {
+  const { jenisBB } = req.body;
   try {
-    const { jenisBB } = req.body;
-    const newJenisBB = new jenisBB({ jenisBB });
+    const newJenisBB = new JenisBB({ jenisBB });
     const savedJenisBB = await newJenisBB.save();
     res.status(201).json({
       message: "JenisBB created successfully",
@@ -18,7 +18,7 @@ exports.createJenisBB = async (req, res) => {
 // Get all jenisBB
 exports.getAllJenisBB = async (req, res) => {
   try {
-    const jenisBBs = await jenisBB.find().sort({ createdAt: -1 });
+    const jenisBBs = await JenisBB.find().sort({ createdAt: -1 });
     res.status(200).json(jenisBBs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -29,7 +29,7 @@ exports.getAllJenisBB = async (req, res) => {
 exports.getJenisBBById = async (req, res) => {
   try {
     const { id } = req.params;
-    const jenisBB = await jenisBB.findById(id);
+    const jenisBB = await JenisBB.findById(id);
     res.status(200).json(jenisBB);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,11 +41,11 @@ exports.updateJenisBB = async (req, res) => {
   try {
     const { id } = req.params;
     const { jenisBB } = req.body;
-    const updatedJenisBB = await jenisBB.findByIdAndUpdate(id, { jenisBB }, { new: true });
+    const updatedJenisBB = await JenisBB.findByIdAndUpdate(id, { jenisBB }, { new: true });
     if (!updatedJenisBB) return res.status(404).json({ error: "JenisBB not found" });
     res.status(200).json({
       message: "JenisBB updated successfully",
-      updatedBB,
+      updatedJenisBB,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -56,7 +56,7 @@ exports.updateJenisBB = async (req, res) => {
 exports.deleteJenisBB = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedJenisBB = await jenisBB.findByIdAndDelete(id);
+    const deletedJenisBB = await JenisBB.findByIdAndDelete(id);
     if (!deletedJenisBB) return res.status(404).json({ error: "JenisBB not found" });
     res.status(200).json({
       message: "JenisBB deleted successfully",

@@ -1,1 +1,448 @@
-<h4><%= title %></h4>
+<div class="d-flex flex-column w-100">
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <h4 class="mb-1"><%= title %></h4>
+    <button class="btn btn-success" onclick="showAddModal()"><i class="bi bi-plus"></i> Tambah <%= title %></button>
+  </div>
+</div>
+<div class="mt-3">
+  <!-- Tombol untuk memilih status -->
+  <div class="dropdown">
+    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-filter"></i> Semua</button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#">Semua</a></li>
+      <li><a class="dropdown-item" href="#">Safe</a></li>
+      <li><a class="dropdown-item" href="#">Need Restock</a></li>
+      <li><a class="dropdown-item" href="#">Out of Stock</a></li>
+    </ul>
+  </div>
+  <!-- End Tombol Status -->
+</div>
+<div class="mt-4">
+  <!-- Tabel -->
+  <table class="table table-hover rounded-3 overflow-hidden">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center" style="width: 50px">No.</th>
+        <th scope="col" style="width: 100px">Kode</th>
+        <th scope="col" style="width: 250px">Nama</th>
+        <th scope="col">Jenis</th>
+        <th scope="col" style="width: 100px">Stok</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="text-center" style="width: 200px">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+  <!-- End Tabel -->
+
+  <!-- Modal untuk menambah BB -->
+  <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Tambah Produk</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Kode</span>
+            <input type="text" id="kodeBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Nama</span>
+            <input type="text" id="namaBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Jenis</span>
+            <select class="form-select" id="jenisBB"></select>
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Satuan / Unit</span>
+            <input type="text" id="unitBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Stok </span>
+            <input type="number" id="stok" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Avg. Lead Time </span>
+            <input type="number" id="avgLeadTime" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Max. Lead Time </span>
+            <input type="number" id="maxLeadTime" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Avg. Usage </span>
+            <input type="number" id="avgUsage" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Max. Usage </span>
+            <input type="number" id="maxUsage" class="form-control" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-success" onclick="tambah()">Tambah</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Modal untuk edit BB -->
+  <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Edit Produk</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Kode</span>
+            <input type="text" id="editKodeBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Nama</span>
+            <input type="text" id="editNamaBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Jenis</span>
+            <select class="form-select" id="editJenisBB"></select>
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Satuan / Unit</span>
+            <input type="text" id="editUnitBB" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Stok </span>
+            <input type="number" id="editStok" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Avg. Lead Time </span>
+            <input type="number" id="editAvgLeadTime" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Max. Lead Time </span>
+            <input type="number" id="editMaxLeadTime" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Avg. Usage </span>
+            <input type="number" id="editAvgUsage" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Max. Usage </span>
+            <input type="number" id="editMaxUsage" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Batas Restock </span>
+            <input type="number" id="editSafetyStock" class="form-control" required disabled />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 150px">Status </span>
+            <input type="text" id="editStatus" class="form-control" required disabled />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-warning" onclick="edit()">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Modal untuk hapus  -->
+  <div class="modal fade" id="modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Hapus Produk</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Apakah Anda yakin ingin menghapus produk ini?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger" onclick="hapus()">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+</div>
+
+<script>
+  // Opsi untuk jenis BB
+  async function loadJenisBB(modalType = "edit") {
+    try {
+      const response = await fetch("/api/jenisBB", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const select = modalType === "edit" ? document.getElementById("editJenisBB") : document.getElementById("jenisBB");
+        select.innerHTML = ""; // Clear existing options
+        data.forEach((jenisBB) => {
+          const option = document.createElement("option");
+          option.value = jenisBB.jenisBB;
+          option.textContent = jenisBB.jenisBB;
+          select.appendChild(option);
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Fungsi untuk menampilkan modal tambah
+  async function showAddModal() {
+    // Memuat data untuk dropdown jenisBB sebelum modal ditampilkan
+    await loadJenisBB("tambah");
+    new bootstrap.Modal(document.getElementById("modalTambah")).show();
+  }
+
+  // Fungsi untuk menampilkan modal edit
+  async function showEditModal(id) {
+    try {
+      const response = await fetch(`/api/BB/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Mengisi field dengan data dari API
+        document.getElementById("editKodeBB").value = data.kodeBB;
+        document.getElementById("editNamaBB").value = data.namaBB;
+        document.getElementById("editJenisBB").value = data.jenisBB;
+        document.getElementById("editUnitBB").value = data.unitBB;
+        document.getElementById("editStok").value = data.stok;
+        document.getElementById("editAvgLeadTime").value = data.avgLeadTime;
+        document.getElementById("editMaxLeadTime").value = data.maxLeadTime;
+        document.getElementById("editAvgUsage").value = data.avgUsage;
+        document.getElementById("editMaxUsage").value = data.maxUsage;
+        document.getElementById("editSafetyStock").value = data.safetyStock;
+        document.getElementById("editStatus").value = data.status;
+
+        // Menyimpan ID yang sedang diedit
+        currentId = id;
+
+        // Menampilkan modal
+        new bootstrap.Modal(document.getElementById("modalEdit")).show();
+      } else {
+        console.error("Gagal mendapatkan data jenis produk");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  // Fungsi untuk menampilkan modal hapus tugas
+  function showDeleteModal(id) {
+    currentId = id;
+    new bootstrap.Modal(document.getElementById("modalHapus")).show();
+  }
+
+  // Tambah jenisBB
+  async function tambah() {
+    const kodeBB = document.getElementById("kodeBB").value;
+    const namaBB = document.getElementById("namaBB").value;
+    const jenisBB = document.getElementById("jenisBB").value;
+    const unitBB = document.getElementById("unitBB").value;
+    const stok = document.getElementById("stok").value;
+    const avgLeadTime = document.getElementById("avgLeadTime").value;
+    const maxLeadTime = document.getElementById("maxLeadTime").value;
+    const avgUsage = document.getElementById("avgUsage").value;
+    const maxUsage = document.getElementById("maxUsage").value;
+    try {
+      const response = await fetch("/api/BB", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById("kodeBB").value = "";
+        document.getElementById("namaBB").value = "";
+        document.getElementById("jenisBB").value = "";
+        document.getElementById("unitBB").value = "";
+        document.getElementById("stok").value = "";
+        document.getElementById("avgLeadTime").value = "";
+        document.getElementById("maxLeadTime").value = "";
+        document.getElementById("avgUsage").value = "";
+        document.getElementById("maxUsage").value = "";
+        const modalTambah = bootstrap.Modal.getInstance(document.getElementById("modalTambah"));
+        modalTambah.hide();
+        load();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Edit jenisBB
+  async function edit() {
+    const kodeBB = document.getElementById("editKodeBB").value;
+    const namaBB = document.getElementById("editNamaBB").value;
+    const jenisBB = document.getElementById("editJenisBB").value;
+    const unitBB = document.getElementById("editUnitBB").value;
+    const stok = document.getElementById("editStok").value;
+    const avgLeadTime = document.getElementById("editAvgLeadTime").value;
+    const maxLeadTime = document.getElementById("editMaxLeadTime").value;
+    const avgUsage = document.getElementById("editAvgUsage").value;
+    const maxUsage = document.getElementById("editMaxUsage").value;
+
+    try {
+      const response = await fetch(`/api/BB/${currentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const modalEdit = bootstrap.Modal.getInstance(document.getElementById("modalEdit"));
+        modalEdit.hide();
+        load();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Hapus jenisBB
+  async function hapus() {
+    try {
+      const response = await fetch(`/api/BB/${currentId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const modalHapus = bootstrap.Modal.getInstance(document.getElementById("modalHapus"));
+        modalHapus.hide();
+        load();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Kategori default: Semua
+  let selectedStatus = "Semua";
+
+  // Ganti isi dari Dropdown filter
+  document.addEventListener("DOMContentLoaded", function () {
+    const dropdownButton = document.querySelector(".dropdown-toggle");
+    const dropdownItems = document.querySelectorAll(".dropdown-item");
+
+    dropdownItems.forEach((item) => {
+      item.addEventListener("click", function (event) {
+        event.preventDefault();
+        dropdownButton.innerHTML = `<i class="bi bi-filter"></i> ${this.textContent}`;
+        selectedStatus = this.textContent;
+        load();
+      });
+    });
+  });
+
+  async function load() {
+    try {
+      const response = await fetch("/api/BB", {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      const list = document.getElementById("list");
+
+      // Jika tidak ada produk
+      if (!data || data.length === 0) {
+        list.innerHTML = "<tr><td colspan='7' class='text-center'>Tidak ada produk yang terdaftar...</td></tr>";
+        return;
+      }
+
+      // Ganti isi dari Dropdown filter
+      document.addEventListener("DOMContentLoaded", function () {
+        const dropdownButton = document.querySelector(".dropdown-toggle");
+        const dropdownItems = document.querySelectorAll(".dropdown-item");
+
+        dropdownItems.forEach((item) => {
+          item.addEventListener("click", function (event) {
+            event.preventDefault();
+            dropdownButton.innerHTML = `<i class="bi bi-filter"></i> ${this.textContent}`;
+            selectedStatus = this.textContent;
+            load();
+          });
+        });
+      });
+
+      // Filter tugas berdasarkan status yang dipilih
+      const filteredTasks = selectedStatus === "Semua" ? data : data.filter((data) => data.status === selectedStatus);
+
+      // Jika tidak ada tugas yang sesuai dengan kategori yang dipilih
+      if (filteredTasks.length === 0) {
+        list.innerHTML = "<tr><td colspan='7' class='text-center'>Tidak ada produk dengan status ini...</td></tr>";
+        return;
+      }
+      // Jika ada produk
+      list.innerHTML = filteredTasks
+        .map((BBs, index) => {
+          let statusClass = "";
+          // Menentukan class button berdasarkan status
+          if (BBs.status === "Safe") {
+            statusClass = "btn-success"; // Hijau
+          } else if (BBs.status === "Need Restock") {
+            statusClass = "btn-warning"; // Kuning
+          } else if (BBs.status === "Out of Stock") {
+            statusClass = "btn-danger"; // Merah
+          }
+          return `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td>${BBs.kodeBB}</td>
+                        <td>${BBs.namaBB}</td>
+                        <td>${BBs.jenisBB}</td>
+                        <td>${BBs.stok}</td>
+                        <td>
+                            <button class="btn ${statusClass} btn-sm fw-bold">${BBs.status}</button>
+                            </td>
+                        <td class="text-center">
+                            <button class="btn btn-warning btn-sm" onclick="showEditModal('${BBs._id}')">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${BBs._id}')">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+        })
+        .join("");
+    } catch (error) {
+      document.getElementById("list").innerHTML = `
+                <tr><td colspan='7' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>
+            `;
+    }
+  }
+  // Panggil fungsi load saat halaman selesai dimuat
+  document.addEventListener("DOMContentLoaded", function () {
+    load(); // Memanggil fungsi untuk memuat data BB
+    loadJenisBB(); // Memanggil fungsi untuk memuat data jenisBB
+  });
+</script>

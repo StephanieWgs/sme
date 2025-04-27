@@ -148,4 +148,4 @@ penjualanSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model("{Penjualan}", penjualanSchema);
+module.exports = mongoose.model("Penjualan", penjualanSchema);

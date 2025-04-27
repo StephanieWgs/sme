@@ -2,15 +2,36 @@ const BB = require("../models/BB");
 
 //Create BB
 exports.createBB = async (req, res) => {
+  const { kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage } = req.body;
+
+  // Konversi string menjadi number (agar data tersimpan dengan tipe yang benar)
+  const convertedStok = Number(stok);
+  const convertedAvgLeadTime = Number(avgLeadTime);
+  const convertedMaxLeadTime = Number(maxLeadTime);
+  const convertedAvgUsage = Number(avgUsage);
+  const convertedMaxUsage = Number(maxUsage);
+
   try {
-    const { kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage } = req.body;
-    const newBB = new BB({ kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage });
+    const newBB = new BB({
+      kodeBB,
+      namaBB,
+      jenisBB,
+      unitBB,
+      stok: convertedStok,
+      avgLeadTime: convertedAvgLeadTime,
+      maxLeadTime: convertedMaxLeadTime,
+      avgUsage: convertedAvgUsage,
+      maxUsage: convertedMaxUsage,
+    });
+
     const savedBB = await newBB.save();
+
     res.status(201).json({
       message: "BB created successfully",
       savedBB,
     });
   } catch (error) {
+    console.error("Error while creating BB:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -44,8 +65,30 @@ exports.updateBB = async (req, res) => {
   try {
     const { id } = req.params;
     const { kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage } = req.body;
-    const updatedBB = await BB.findByIdAndUpdate(id, { kodeBB, namaBB, jenisBB, unitBB, stok, avgLeadTime, maxLeadTime, avgUsage, maxUsage }, { new: true });
+
+    // Cari BB berdasarkan id dan update data yang dikirim
+    const updatedBB = await BB.findById(id);
+
     if (!updatedBB) return res.status(404).json({ error: "BB not found" });
+
+    // Update data yang diterima
+    updatedBB.kodeBB = kodeBB || updatedBB.kodeBB;
+    updatedBB.namaBB = namaBB || updatedBB.namaBB;
+    updatedBB.jenisBB = jenisBB || updatedBB.jenisBB;
+    updatedBB.unitBB = unitBB || updatedBB.unitBB;
+    updatedBB.stok = stok || updatedBB.stok;
+    updatedBB.avgLeadTime = avgLeadTime || updatedBB.avgLeadTime;
+    updatedBB.maxLeadTime = maxLeadTime || updatedBB.maxLeadTime;
+    updatedBB.avgUsage = avgUsage || updatedBB.avgUsage;
+    updatedBB.maxUsage = maxUsage || updatedBB.maxUsage;
+
+    // Hitung ulang safety stock dan status
+    updatedBB.safetyStock = updatedBB.hitungSafetyStock();
+    updatedBB.status = updatedBB.statusStock();
+
+    // Simpan perubahan ke database
+    await updatedBB.save();
+
     res.status(200).json({
       message: "BB updated successfully",
       updatedBB,
@@ -88,4 +131,22 @@ exports.reduceStokBB = async (kodeBB, qty) => {
     const updatedBB = await bb.save();
     return updatedBB;
   }
+};
+
+//Hitung banyak BB yang Status Need Restock
+exports.countNeedRestock = async () => {
+  const count = await BB.countDocuments({ status: STATUS_NEED_RESTOCK });
+  return count;
+};
+
+//Hitung banyak BB yang Status Safe
+exports.countSafe = async () => {
+  const count = await BB.countDocuments({ status: STATUS_SAFE });
+  return count;
+};
+
+//Hitung banyak BB yang Status Out of Stock
+exports.countOutOfStock = async () => {
+  const count = await BB.countDocuments({ status: STATUS_OUT_OF_STOCK });
+  return count;
 };
