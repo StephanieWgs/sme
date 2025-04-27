@@ -1,6 +1,8 @@
 body {
+  height: 100vh;
   font-family: "Montserrat", sans-serif;
   background-color: #f4f4f4;
+  overflow: hidden;
 }
 
 .box-area {
@@ -49,9 +51,16 @@ aside {
   flex-direction: column;
   height: 100vh;
   background-color: #fff;
+  overflow-y: auto; /* Allows sidebar to scroll if content is too long */
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
+  overflow-y: auto;
   flex-grow: 1; /* Mengambil sisa ruang */
   padding: 30px;
+  height: 100vh;
 }

@@ -35,7 +35,7 @@
     </div>
 
     <!-- Tabel Barang di Penjualan -->
-    <table class="table table-hover rounded-3 overflow-hidden mt-4">
+    <table class="table table-hover rounded-3 overflow-hidden mt-3">
       <thead>
         <tr>
           <th scope="col" style="width: 250px">Produk</th>
@@ -168,6 +168,37 @@
   </div>
 </div>
 
+<div class="row mt-3">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Diskon</h6>
+        <h5 class="card-subtitle mt-2">Rp</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">PPN</h6>
+        <h5 class="card-subtitle mt-2">Rp</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Total</h6>
+        <h5 class="card-subtitle mt-2">Rp</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-row-reverse mt-4">
+  <button type="button" class="btn btn-primary" onclick="simpan()" style="width: 20%">Simpan</button>
+</div>
+
 <script>
   // Opsi untuk customer
   async function loadCustomer() {
@@ -207,6 +238,10 @@
       if (response.ok) {
         const data = await response.json();
         const select = modalType === "edit" ? document.getElementById("editKodeBB") : document.getElementById("kodeBB");
+
+        // Hapus semua opsi yang ada sebelumnya untuk menghindari duplikasi
+        select.innerHTML = ""; // Ini akan menghapus semua opsi dalam <select>
+
         data.forEach((barang) => {
           const option = document.createElement("option");
           option.value = barang.kodeBB; // nilai yang disimpan saat dipilih
