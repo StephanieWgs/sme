@@ -1,1 +1,310 @@
-<h4><%= title %></h4>
+<div class="d-flex flex-column w-100">
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <h4 class="mb-1">
+        <%= title %>
+      </h4>
+      <button class="btn btn-success" onclick="showAddModal()"><i class="bi bi-plus"></i> Tambah <%= title %></button>
+    </div>
+  </div>
+  <div class="mt-4">
+    <!-- Tabel -->
+    <table class="table table-hover rounded-3 overflow-hidden">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center" style="width: 50px">No.</th>
+          <th scope="col">Kode</th>
+          <th scope="col">Nama</th>
+          <th scope="col">Alamat</th>
+          <th scope="col">No. HP</th>
+          <th scope="col">Email</th>
+          <th scope="col" class="text-center" style="width: 200px">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="list"></tbody>
+    </table>
+    <!-- End Tabel -->
+  
+    <!-- Modal untuk menambah supplier -->
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Tambah Supplier</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Kode</span>
+              <input type="text" id="kodeSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Nama</span>
+              <input type="text" id="namaSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Alamat</span>
+              <input type="text" id="alamatSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">No. HP</span>
+              <input type="text" id="noHPSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Email</span>
+              <input type="email" id="emailSupplier" class="form-control" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-success" onclick="tambahSupplier()">Tambah</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+  
+    <!-- Modal untuk edit Supplier -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Edit Supplier</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Kode</span>
+              <input type="text" id="editKodeSupplier" class="form-control" required disabled />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Nama</span>
+              <input type="text" id="editNamaSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Alamat</span>
+              <input type="text" id="editAlamatSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">No. HP</span>
+              <input type="text" id="editNoHPSupplier" class="form-control" required />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 120px">Email</span>
+              <input type="email" id="editEmailSupplier" class="form-control" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-warning" onclick="editSupplier()">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+  
+    <!-- Modal untuk hapus Supplier -->
+    <div class="modal fade" id="modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Hapus Supplier</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Apakah Anda yakin ingin menghapus Supplier ini?</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-danger" onclick="hapusSupplier()">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+  </div>
+  
+  <script>
+    // Fungsi untuk menampilkan modal tambah Supplier
+    function showAddModal() {
+      new bootstrap.Modal(document.getElementById("modalTambah")).show();
+    }
+  
+    /// Fungsi untuk menampilkan modal edit Supplier
+    async function showEditModal(id) {
+      try {
+        const response = await fetch(`/api/supplier/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+  
+          // Mengisi field dengan data dari API
+          document.getElementById("editKodeSupplier").value = data.kodeSupplier;
+          document.getElementById("editNamaSupplier").value = data.namaSupplier;
+          document.getElementById("editAlamatSupplier").value = data.alamatSupplier;
+          document.getElementById("editNoHPSupplier").value = data.noHPSupplier;
+          document.getElementById("editEmailSupplier").value = data.emailSupplier;
+  
+          // Menyimpan ID yang sedang diedit
+          currentId = id;
+  
+          // Menampilkan modal
+          new bootstrap.Modal(document.getElementById("modalEdit")).show();
+        } else {
+          console.error("Gagal mendapatkan data Supplier");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  
+    // Fungsi untuk menampilkan modal hapus Supplier
+    function showDeleteModal(id) {
+      currentId = id;
+      new bootstrap.Modal(document.getElementById("modalHapus")).show();
+    }
+  
+    // Tambah Supplier
+    async function tambahSupplier() {
+      const kodeSupplier = document.getElementById("kodeSupplier").value;
+      const namaSupplier = document.getElementById("namaSupplier").value;
+      const alamatSupplier = document.getElementById("alamatSupplier").value;
+      const noHPSupplier = document.getElementById("noHPSupplier").value;
+      const emailSupplier = document.getElementById("emailSupplier").value;
+  
+      try {
+        const response = await fetch("/api/supplier", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kodeSupplier,
+            namaSupplier,
+            alamatSupplier,
+            noHPSupplier,
+            emailSupplier,
+          }),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById("kodeSupplier").value = "";
+          document.getElementById("namaSupplier").value = "";
+          document.getElementById("alamatSupplier").value = "";
+          document.getElementById("noHPSupplier").value = "";
+          document.getElementById("emailSupplier").value = "";
+          const modalTambah = bootstrap.Modal.getInstance(document.getElementById("modalTambah"));
+          modalTambah.hide();
+          loadSuppliers();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    // Edit Supplier
+    async function editSupplier() {
+      const kodeSupplier = document.getElementById("editKodeSupplier").value;
+      const namaSupplier = document.getElementById("editNamaSupplier").value;
+      const alamatSupplier = document.getElementById("editAlamatSupplier").value;
+      const noHPSupplier = document.getElementById("editNoHPSupplier").value;
+      const emailSupplier = document.getElementById("editEmailSupplier").value;
+  
+      try {
+        const response = await fetch(`/api/supplier/${currentId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kodeSupplier,
+            namaSupplier,
+            alamatSupplier,
+            noHPSupplier,
+            emailSupplier,
+          }),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const modalEdit = bootstrap.Modal.getInstance(document.getElementById("modalEdit"));
+          modalEdit.hide();
+          loadSuppliers();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    // HapusSupplier
+    async function hapusSupplier() {
+      try {
+        const response = await fetch(`/api/supplier/${currentId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const modalHapus = bootstrap.Modal.getInstance(document.getElementById("modalHapus"));
+          modalHapus.hide();
+          loadSuppliers();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    // Memuat data Supplier
+    async function loadSuppliers() {
+      // const token = localStorage.getItem("token");
+      try {
+        const response = await fetch("/api/supplier", {
+          method: "GET",
+        });
+  
+        const data = await response.json();
+        const list = document.getElementById("list");
+  
+        // Jika tidak ada Supplier
+        if (!data || data.length === 0) {
+          list.innerHTML = "<tr><td colspan='7' class='text-center'>Tidak ada Supplier yang terdaftar...</td></tr>";
+          return;
+        }
+  
+        // Jika ada Supplier
+        list.innerHTML = data
+          .map((supplier, index) => {
+            return `
+              <tr>
+                <td class="text-center">${index + 1}</td>
+                <td>${supplier.kodeSupplier}</td>
+                <td>${supplier.namaSupplier}</td>
+                <td>${supplier.alamatSupplier}</td>
+                <td>${supplier.noHPSupplier}</td>
+                <td>${supplier.emailSupplier}</td>
+                <td class="text-center">
+                  <button class="btn btn-warning btn-sm" onclick="showEditModal('${supplier._id}')">
+                    <i class="bi bi-pencil"></i> Edit
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${supplier._id}')">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      } catch (error) {
+        document.getElementById("list").innerHTML = `<tr><td colspan='7' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>`;
+      }
+    }
+  
+    // Panggil fungsi load saat halaman selesai dimuat
+    document.addEventListener("DOMContentLoaded", loadSuppliers);
+  </script>
