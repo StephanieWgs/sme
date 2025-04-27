@@ -1,0 +1,375 @@
+<div class="d-flex align-items-center mb-3">
+  <button class="btn btn-back me-2 py-0 ps-0 border-0" onclick="window.history.back()"><i class="bi bi-arrow-left fs-5"></i></button>
+  <h5 class="mb-0">Tambah Penjualan</h5>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="input-group mb-3">
+      <span class="input-group-text fw-bold" style="width: 150px">Tanggal</span>
+      <input type="date" id="tglPenjualan" class="form-control" required />
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="input-group mb-3">
+      <span class="input-group-text fw-bold" style="width: 150px">Customer</span>
+      <select class="form-select" id="kodeCustomer"></select>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="input-group">
+      <span class="input-group-text fw-bold" style="width: 150px">No. Invoice</span>
+      <input type="text" id="noInv" class="form-control" required />
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-column mt-3 w-100">
+  <div class="container flex-grow-1 bg-white shadow-sm p-4 border rounded">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-1">List Barang</h5>
+      <button class="btn btn-success" onclick="showAddModal()"><i class="bi bi-plus"></i> Tambah Barang</button>
+    </div>
+
+    <!-- Tabel Barang di Penjualan -->
+    <table class="table table-hover rounded-3 overflow-hidden mt-4">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 250px">Produk</th>
+          <th scope="col" style="width: 80px; text-align: center">Qty</th>
+          <th scope="col">Harga</th>
+          <th scope="col">Diskon</th>
+          <th scope="col">Total</th>
+          <th scope="col" class="text-center" style="width: 200px">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="list"></tbody>
+    </table>
+    <!-- End Tabel Barang -->
+
+    <!-- Modal untuk menambah barang -->
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Tambah Produk</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Kode</span>
+              <select class="form-select" id="kodeBB"></select>
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Qty</span>
+              <input type="number" id="qty" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Harga</span>
+              <input type="number" id="hargaJual" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Diskon</span>
+              <input type="number" id="diskonItem" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Tipe Diskon</span>
+              <select id="tipeDiskon" class="form-select">
+                <option value="nominal">Nominal</option>
+                <option value="persen">Persen</option>
+              </select>
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Aktifkan PPN</span>
+              <select id="isPPNActive" class="form-select">
+                <option value="true">Ya</option>
+                <option value="false">Tidak</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-success" onclick="tambah()">Tambah</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+
+    <!-- Modal untuk mengedit barang -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Edit Produk</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Kode</span>
+              <select class="form-select" id="editKodeBB"></select>
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Qty</span>
+              <input type="number" id="editQty" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Harga</span>
+              <input type="number" id="editHargaJual" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Diskon</span>
+              <input type="number" id="editDiskonItem" class="form-control" required min="1" />
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Tipe Diskon</span>
+              <select id="editTipeDiskon" class="form-select">
+                <option value="nominal">Nominal</option>
+                <option value="persen">Persen</option>
+              </select>
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-text fw-semibold" style="width: 150px">Aktifkan PPN</span>
+              <select id="editIsPPNActive" class="form-select">
+                <option value="true">Ya</option>
+                <option value="false">Tidak</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-warning" onclick="edit()">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+
+    <!-- Modal untuk hapus  -->
+    <div class="modal fade" id="modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Hapus Produk</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Apakah Anda yakin ingin menghapus barang ini?</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-danger" onclick="hapus()">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal -->
+  </div>
+</div>
+
+<script>
+  // Opsi untuk customer
+  async function loadCustomer() {
+    try {
+      const response = await fetch("/api/customer", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const select = document.getElementById("kodeCustomer");
+        data.forEach((customer) => {
+          const option = document.createElement("option");
+          option.value = customer.kodeCustomer; // nilai yang disimpan saat dipilih
+          option.textContent = `${customer.kodeCustomer} - ${customer.namaCustomer}`; // teks yang ditampilkan
+          select.appendChild(option);
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  //   Opsi untuk barang
+  async function loadBarang(modalType = "edit") {
+    try {
+      const response = await fetch("/api/BB", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const select = modalType === "edit" ? document.getElementById("editKodeBB") : document.getElementById("kodeBB");
+        data.forEach((barang) => {
+          const option = document.createElement("option");
+          option.value = barang.kodeBB; // nilai yang disimpan saat dipilih
+          option.textContent = `${barang.kodeBB} - ${barang.namaBB}`; // teks yang ditampilkan
+          select.appendChild(option);
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Simpan barang ke dalam array sementara untuk detailPenjualan
+  let detailPenjualan = [];
+
+  // Fungsi untuk menampilkan modal tambah
+  async function showAddModal() {
+    await loadBarang("tambah");
+    new bootstrap.Modal(document.getElementById("modalTambah")).show();
+  }
+
+  // Fungsi untuk menampilkan modal edit
+  async function showEditModal(index) {
+    document.getElementById("editKodeBB").value = detailPenjualan[index].kodeBB;
+    document.getElementById("editQty").value = detailPenjualan[index].qty;
+    document.getElementById("editHargaJual").value = detailPenjualan[index].hargaJual;
+    document.getElementById("editDiskonItem").value = detailPenjualan[index].diskonItem;
+    document.getElementById("editTipeDiskon").value = detailPenjualan[index].tipeDiskon;
+    document.getElementById("editIsPPNActive").value = detailPenjualan[index].isPPNActive;
+    currentIndex = index;
+    new bootstrap.Modal(document.getElementById("modalEdit")).show();
+  }
+
+  // Fungsi untuk menampilkan modal hapus
+  async function showDeleteModal(index) {
+    currentIndex = index;
+    new bootstrap.Modal(document.getElementById("modalHapus")).show();
+  }
+
+  // Fungsi untuk menambah barang
+  async function tambah() {
+    // Ambil nilai dari input form
+    const kodeBB = document.getElementById("kodeBB").value;
+    const qty = document.getElementById("qty").value;
+    const hargaJual = document.getElementById("hargaJual").value;
+    const diskonItem = document.getElementById("diskonItem").value;
+    const tipeDiskon = document.getElementById("tipeDiskon").value;
+    const isPPNActive = document.getElementById("isPPNActive").value === "true"; // Mengonversi string ke boolean
+
+    // Hitung subtotal
+    let subtotal = parseFloat(hargaJual) * parseInt(qty);
+
+    // Hitung diskon jika tipe diskon nominal atau persen
+    let diskon = 0;
+    if (tipeDiskon === "persen") {
+      diskon = (diskonItem / 100) * subtotal;
+    } else {
+      diskon = parseFloat(diskonItem); // Nominal
+    }
+
+    // Hitung PPN jika aktif
+    let ppn = 0;
+    if (isPPNActive) {
+      ppn = subtotal * 0.11;
+    }
+
+    // Hitung total setelah diskon
+    let total = subtotal - diskon;
+
+    const barangBaru = {
+      kodeBB,
+      hargaJual: parseFloat(hargaJual),
+      qty: parseInt(qty),
+      diskonItem: parseFloat(diskonItem),
+      tipeDiskon,
+      isPPNActive,
+      ppnItem: ppn,
+      subtotal: total,
+    };
+
+    // Tambahkan barang ke detailPenjualan
+    detailPenjualan.push(barangBaru);
+    // Update tampilan list barang (dalam tabel)
+    tampilkanBarang();
+
+    document.getElementById("kodeBB").value = "";
+    document.getElementById("qty").value = "";
+    document.getElementById("hargaJual").value = "";
+    document.getElementById("diskonItem").value = "";
+    document.getElementById("tipeDiskon").value = "nominal";
+    document.getElementById("isPPNActive").value = "false";
+
+    // Menutup modal setelah barang berhasil ditambah
+    const modal = document.getElementById("modalTambah");
+    const modalInstance = bootstrap.Modal.getInstance(modal);
+    modalInstance.hide(); // Menutup modal
+  }
+
+  // Fungsi untuk menghapus barang
+  async function hapus(index) {
+    // Hapus barang dari array
+    detailPenjualan.splice(index, 1);
+
+    tampilkanBarang();
+    // Menutup modal setelah barang berhasil dihapus
+    const modal = document.getElementById("modalHapus");
+    const modalInstance = bootstrap.Modal.getInstance(modal);
+    modalInstance.hide(); // Menutup modal
+  }
+
+  // Fungsi untuk mendapatkan nama barang berdasarkan kode
+  async function getNamaBarang(kodeBB) {
+    try {
+      const response = await fetch(`/api/BB/nama/${kodeBB}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Periksa status respons
+      if (!response.ok) {
+        throw new Error(`Failed to fetch barang name, status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data); // Lihat data yang diterima
+      return data.namaBB;
+    } catch (error) {
+      console.error("Error fetching barang name:", error.message);
+      return "";
+    }
+  }
+
+  async function tampilkanBarang() {
+    const tbody = document.getElementById("list");
+    tbody.innerHTML = ""; // Kosongkan tabel sebelum menambah data baru
+
+    // Untuk setiap item di detailPenjualan, kita ambil nama barang secara asynchronous
+    for (let i = 0; i < detailPenjualan.length; i++) {
+      const item = detailPenjualan[i];
+
+      // Menunggu nama barang untuk setiap kodeBB
+      const namaBarang = await getNamaBarang(item.kodeBB);
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+      <td>${item.kodeBB} - ${namaBarang}</td>
+      <td style="text-align: center;">${item.qty}</td>
+      <td>Rp ${item.hargaJual}</td>
+      <td>${item.tipeDiskon === "nominal" ? "Rp " : ""}${item.diskonItem}${item.tipeDiskon === "persen" ? "%" : ""}</td>
+      <td>Rp ${item.subtotal}</td>
+      <td class="text-center">
+        <button class="btn btn-warning" onclick="showEditModal(${i})"><i class="bi bi-pencil"></i> Edit</button>
+        <button class="btn btn-danger" onclick="showDeleteModal(${i})"><i class="bi bi-trash"></i> Delete</button>
+      </td>
+    `;
+      tbody.appendChild(row);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    loadBarang();
+    loadCustomer();
+  });
+</script>

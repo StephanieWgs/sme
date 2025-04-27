@@ -133,6 +133,18 @@ exports.reduceStokBB = async (kodeBB, qty) => {
   }
 };
 
+// Dapat nama BB berdasarkan kode
+exports.getBBNameByCode = async (req, res) => {
+  try {
+    const { kodeBB } = req.params;
+    const bb = await BB.findOne({ kodeBB: kodeBB });
+    if (!bb) return res.status(404).json({ error: "BB not found" });
+    res.status(200).json({ namaBB: bb.namaBB });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 //Hitung banyak BB dengan status tertentu
 exports.countStatus = async (req, res) => {
   try {

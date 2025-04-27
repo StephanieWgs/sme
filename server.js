@@ -96,11 +96,47 @@ app.get("/penjualan", authMiddleware, (req, res) => {
   });
 });
 
+// Rute untuk tambah penjualan
+app.get("/tambahPenjualan", (req, res) => {
+  res.render("layout", {
+    title: "Tambah Penjualan",
+    body: "tambahPenjualan",
+    activePage: "penjualan",
+  });
+});
+
+// Rute untuk edit penjualan
+app.get("/editPenjualan", (req, res) => {
+  res.render("layout", {
+    title: "Edit Penjualan",
+    body: "editPenjualan",
+    activePage: "penjualan",
+  });
+});
+
 // Rute untuk halaman Pembelian
 app.get("/pembelian", authMiddleware, (req, res) => {
   res.render("layout", {
     title: "Pembelian",
     body: "pembelian",
+    activePage: "pembelian",
+  });
+});
+
+// Rute untuk tambah pembelian
+app.get("/tambahPembelian", (req, res) => {
+  res.render("layout", {
+    title: "Tambah Pembelian",
+    body: "tambahPembelian",
+    activePage: "pembelian",
+  });
+});
+
+// Rute untuk edit pembelian
+app.get("/editPembelian", (req, res) => {
+  res.render("layout", {
+    title: "Edit Pembelian",
+    body: "editPembelian",
     activePage: "pembelian",
   });
 });

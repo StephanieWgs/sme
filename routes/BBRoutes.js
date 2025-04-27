@@ -20,4 +20,7 @@ router.put("/:id", BBController.updateBB);
 // Routes untuk menghapus BB
 router.delete("/:id", BBController.deleteBB);
 
+// Routes untuk mendapatkan BB berdasarkan kode
+router.get("/nama/:kodeBB", BBController.getBBNameByCode);
+
 module.exports = router;

@@ -1,1 +1,116 @@
-<h4><%= title %></h4>
+<div class="d-flex flex-column w-100">
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <h4 class="mb-1"><%= title %></h4>
+    <button class="btn btn-success" onclick="window.location.href='/tambahPenjualan'"><i class="bi bi-plus"></i> Tambah <%= title %></button>
+  </div>
+</div>
+<div class="mt-4">
+  <!-- Tabel -->
+  <table class="table table-hover rounded-3 overflow-hidden">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center" style="width: 50px">No.</th>
+        <th scope="col">Tanggal</th>
+        <th scope="col" style="width: 150px">Invoice</th>
+        <th scope="col">Customer</th>
+        <th scope="col" style="width: 150px">Total</th>
+        <th scope="col" class="text-center" style="width: 200px">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+  <!-- End Tabel -->
+
+  <!-- Modal untuk hapus penjualan -->
+  <div class="modal fade" id="modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Hapus Penjualan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Apakah Anda yakin ingin menghapus penjualan ini?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger" onclick="hapus()">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+</div>
+
+<script>
+  // Fungsi untuk menampilkan modal hapus penjualan
+  function showDeleteModal(id) {
+    currentId = id;
+    new bootstrap.Modal(document.getElementById("modalHapus")).show();
+  }
+
+  // Hapus penjualan
+  async function hapus() {
+    try {
+      const response = await fetch(`/api/penjualan/${currentId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const modalHapus = bootstrap.Modal.getInstance(document.getElementById("modalHapus"));
+        modalHapus.hide();
+        loadCustomers();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Memuat data customer
+  async function load() {
+    try {
+      const response = await fetch("/api/penjualan", {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      const list = document.getElementById("list");
+
+      // Jika tidak ada customer
+      if (!data || data.length === 0) {
+        list.innerHTML = "<tr><td colspan='6' class='text-center'>Tidak ada penjualan yang terdaftar...</td></tr>";
+        return;
+      }
+
+      // Jika ada customer
+      list.innerHTML = data
+        .map((penjualan, index) => {
+          return `
+              <tr>
+                <td class="text-center">${index + 1}</td>
+                <td>${penjualan.tglPenjualan}</td>
+                <td>${penjualan.noInv}</td>
+                <td>${penjualan.kodeCustomer}</td>
+                <td>Rp ${penjualan.totalPenjualan}</td>
+                <td class="text-center">
+                  <button class="btn btn-warning btn-sm" onclick="window.location.href='/tambahPenjualan/${penjualan._id}')">
+                    <i class="bi bi-pencil"></i> Edit
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${penjualan._id}')">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </td>
+              </tr>
+            `;
+        })
+        .join("");
+    } catch (error) {
+      document.getElementById("list").innerHTML = `<tr><td colspan='6' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>`;
+    }
+  }
+
+  // Panggil fungsi load saat halaman selesai dimuat
+  document.addEventListener("DOMContentLoaded", load);
+</script>

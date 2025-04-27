@@ -12,6 +12,11 @@ body {
   z-index: 9999999;
 }
 
+.btn-back {
+  background-color: transparent;
+  color: black;
+}
+
 .btn-menu {
   background-color: transparent;
   color: #747474;
