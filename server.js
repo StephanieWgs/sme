@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -46,13 +47,72 @@ app.use("/api/supplier", supplierRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/auth", authRoutes);
 
-// Rute halaman
+// Rute halaman login
 app.get("/", (req, res) => {
   res.render("index");
 });
 
+// Rute untuk halaman Dashboard
 app.get("/dashboard", (req, res) => {
-  res.render("dashboard");
+  res.render("layout", {
+    title: "Dashboard",
+    body: "dashboard",
+    activePage: "dashboard",
+  });
+});
+
+// Rute untuk halaman Produk
+app.get("/produk", (req, res) => {
+  res.render("layout", {
+    title: "Produk",
+    body: 'produk',
+    activePage: "produk",
+  });
+});
+
+// Rute untuk halaman Penjualan
+app.get("/penjualan", (req, res) => {
+  res.render("layout", {
+    title: "Penjualan",
+    body: 'penjualan',
+    activePage: "penjualan",
+  });
+});
+
+// Rute untuk halaman Pembelian
+app.get("/pembelian", (req, res) => {
+  res.render("layout", {
+    title: "Pembelian",
+    body: 'pembelian',
+    activePage: "pembelian",
+  });
+});
+
+// Rute untuk halaman Customer
+app.get("/customer", (req, res) => {
+  res.render("layout", {
+    title: "Customer",
+    body: 'customer',
+    activePage: "customer",
+  });
+});
+
+// Rute untuk halaman Supplier
+app.get("/supplier", (req, res) => {
+  res.render("layout", {
+    title: "Supplier",
+    body: 'supplier',
+    activePage: "supplier",
+  });
+});
+
+// Rute untuk halaman user
+app.get("/user", (req, res) => {
+  res.render("layout", {
+    title: "User",
+    body: 'user',
+    activePage: "user",
+  });
 });
 
 //Start server

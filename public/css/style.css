@@ -12,3 +12,41 @@ body {
   z-index: 9999999;
 }
 
+.btn-menu {
+  background-color: transparent;
+  color: #a4a4a4;
+}
+
+.btn-menu:hover {
+  background-color: #7db1ff;
+  color: white;
+}
+
+.btn-menu.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-logout {
+  background-color: transparent;
+  color: #dc3545;
+  margin-top: auto;
+}
+
+/* CSS untuk layout sidebar dan konten */
+body {
+  display: flex;
+  height: 100%;
+}
+
+aside {
+  width: 18%;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.main-content {
+  flex-grow: 1; /* Mengambil sisa ruang */
+  padding: 20px;
+}
