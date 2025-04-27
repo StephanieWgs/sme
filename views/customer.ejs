@@ -1,1 +1,310 @@
-<h4><%= title %></h4>
+<div class="d-flex flex-column w-100">
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <h4 class="mb-1">
+      <%= title %>
+    </h4>
+    <button class="btn btn-success" onclick="showAddModal()"><i class="bi bi-plus"></i> Tambah <%= title %></button>
+  </div>
+</div>
+<div class="mt-4">
+  <!-- Tabel -->
+  <table class="table table-hover rounded-3 overflow-hidden">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center" style="width: 50px">No.</th>
+        <th scope="col">Kode</th>
+        <th scope="col">Nama</th>
+        <th scope="col">Alamat</th>
+        <th scope="col">No. HP</th>
+        <th scope="col">Email</th>
+        <th scope="col" class="text-center" style="width: 200px">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+  <!-- End Tabel -->
+
+  <!-- Modal untuk menambah customer -->
+  <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Tambah Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Kode</span>
+            <input type="text" id="kodeCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Nama</span>
+            <input type="text" id="namaCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Alamat</span>
+            <input type="text" id="alamatCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">No. HP</span>
+            <input type="text" id="noHPCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Email</span>
+            <input type="email" id="emailCustomer" class="form-control" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-success" onclick="tambahCustomer()">Tambah</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Modal untuk edit customer -->
+  <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Edit Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Kode</span>
+            <input type="text" id="editKodeCustomer" class="form-control" required disabled />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Nama</span>
+            <input type="text" id="editNamaCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Alamat</span>
+            <input type="text" id="editAlamatCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">No. HP</span>
+            <input type="text" id="editNoHPCustomer" class="form-control" required />
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text fw-semibold" style="width: 120px">Email</span>
+            <input type="email" id="editEmailCustomer" class="form-control" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-warning" onclick="editCustomer()">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Modal untuk hapus customer -->
+  <div class="modal fade" id="modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTaskModalLabel">Hapus Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Apakah Anda yakin ingin menghapus customer ini?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger" onclick="hapusCustomer()">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+</div>
+
+<script>
+  // Fungsi untuk menampilkan modal tambah customer
+  function showAddModal() {
+    new bootstrap.Modal(document.getElementById("modalTambah")).show();
+  }
+
+  /// Fungsi untuk menampilkan modal edit customer
+  async function showEditModal(id) {
+    try {
+      const response = await fetch(`/api/customer/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Mengisi field dengan data dari API
+        document.getElementById("editKodeCustomer").value = data.kodeCustomer;
+        document.getElementById("editNamaCustomer").value = data.namaCustomer;
+        document.getElementById("editAlamatCustomer").value = data.alamatCustomer;
+        document.getElementById("editNoHPCustomer").value = data.noHPCustomer;
+        document.getElementById("editEmailCustomer").value = data.emailCustomer;
+
+        // Menyimpan ID yang sedang diedit
+        currentId = id;
+
+        // Menampilkan modal
+        new bootstrap.Modal(document.getElementById("modalEdit")).show();
+      } else {
+        console.error("Gagal mendapatkan data customer");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  // Fungsi untuk menampilkan modal hapus customer
+  function showDeleteModal(id) {
+    currentId = id;
+    new bootstrap.Modal(document.getElementById("modalHapus")).show();
+  }
+
+  // Tambah customer
+  async function tambahCustomer() {
+    const kodeCustomer = document.getElementById("kodeCustomer").value;
+    const namaCustomer = document.getElementById("namaCustomer").value;
+    const alamatCustomer = document.getElementById("alamatCustomer").value;
+    const noHPCustomer = document.getElementById("noHPCustomer").value;
+    const emailCustomer = document.getElementById("emailCustomer").value;
+
+    try {
+      const response = await fetch("/api/customer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          kodeCustomer,
+          namaCustomer,
+          alamatCustomer,
+          noHPCustomer,
+          emailCustomer,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById("kodeCustomer").value = "";
+        document.getElementById("namaCustomer").value = "";
+        document.getElementById("alamatCustomer").value = "";
+        document.getElementById("noHPCustomer").value = "";
+        document.getElementById("emailCustomer").value = "";
+        const modalTambah = bootstrap.Modal.getInstance(document.getElementById("modalTambah"));
+        modalTambah.hide();
+        loadCustomers();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Edit customer
+  async function editCustomer() {
+    const kodeCustomer = document.getElementById("editKodeCustomer").value;
+    const namaCustomer = document.getElementById("editNamaCustomer").value;
+    const alamatCustomer = document.getElementById("editAlamatCustomer").value;
+    const noHPCustomer = document.getElementById("editNoHPCustomer").value;
+    const emailCustomer = document.getElementById("editEmailCustomer").value;
+
+    try {
+      const response = await fetch(`/api/customer/${currentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          kodeCustomer,
+          namaCustomer,
+          alamatCustomer,
+          noHPCustomer,
+          emailCustomer,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const modalEdit = bootstrap.Modal.getInstance(document.getElementById("modalEdit"));
+        modalEdit.hide();
+        loadCustomers();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Hapus customer
+  async function hapusCustomer() {
+    try {
+      const response = await fetch(`/api/customer/${currentId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const modalHapus = bootstrap.Modal.getInstance(document.getElementById("modalHapus"));
+        modalHapus.hide();
+        loadCustomers();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Memuat data customer
+  async function loadCustomers() {
+    // const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("/api/customer", {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      const list = document.getElementById("list");
+
+      // Jika tidak ada customer
+      if (!data || data.length === 0) {
+        list.innerHTML = "<tr><td colspan='7' class='text-center'>Tidak ada customer yang terdaftar...</td></tr>";
+        return;
+      }
+
+      // Jika ada customer
+      list.innerHTML = data
+        .map((customer, index) => {
+          return `
+            <tr>
+              <td class="text-center">${index + 1}</td>
+              <td>${customer.kodeCustomer}</td>
+              <td>${customer.namaCustomer}</td>
+              <td>${customer.alamatCustomer}</td>
+              <td>${customer.noHPCustomer}</td>
+              <td>${customer.emailCustomer}</td>
+              <td class="text-center">
+                <button class="btn btn-warning btn-sm" onclick="showEditModal('${customer._id}')">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${customer._id}')">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    } catch (error) {
+      document.getElementById("list").innerHTML = `<tr><td colspan='7' class='text-center text-danger'>Gagal memuat... Coba lagi nanti.</td></tr>`;
+    }
+  }
+
+  // Panggil fungsi load saat halaman selesai dimuat
+  document.addEventListener("DOMContentLoaded", loadCustomers);
+</script>
