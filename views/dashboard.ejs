@@ -1,1 +1,46 @@
 <h4><%= title %></h4>
+
+<div class="row mt-4">
+  <div class="col-md-4">
+    <div class="card p-2" style="background-color: #4caf50">
+      <div class="card-body">
+        <h5 class="card-title text-white">Safe</h5>
+        <h1 class="card-subtitle mt-2 text-white" id="safe-count"></h1>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-2" style="background-color: #ff9800">
+      <div class="card-body">
+        <h5 class="card-title text-white">Need Restock</h5>
+        <h1 class="card-subtitle mt-2 text-white" id="need-restock-count"></h1>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-2" style="background-color: #f44336">
+      <div class="card-body">
+        <h5 class="card-title text-white">Out of Stock</h5>
+        <h1 class="card-subtitle mt-2 text-white" id="out-of-stock-count"></h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function getStatusSummary() {
+    try {
+      const response = await fetch("/api/BB/count-status");
+      const data = await response.json();
+
+      // Isi data ke dalam card, fallback ke 0 kalau undefined
+      document.getElementById("safe-count").innerText = data.safe ?? 0;
+      document.getElementById("need-restock-count").innerText = data.needRestock ?? 0;
+      document.getElementById("out-of-stock-count").innerText = data.outOfStock ?? 0;
+    } catch (error) {
+      console.error("Gagal mengambil data status:", error);
+    }
+  }
+
+  window.onload = getStatusSummary;
+</script>

@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const BBController = require("../controllers/BBController");
 
+// Routes untuk mendapatkan jumlah BB dengan status tertentu
+router.get("/count-status", BBController.countStatus);
+
 // Routes untuk mendapatkan semua BB
 router.get("/", BBController.getAllBB);
 

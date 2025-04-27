@@ -1,4 +1,4 @@
-const BB = require("../models/BB");
+const { BB, STATUS_SAFE, STATUS_NEED_RESTOCK, STATUS_OUT_OF_STOCK } = require("../models/BB");
 
 //Create BB
 exports.createBB = async (req, res) => {
@@ -133,20 +133,15 @@ exports.reduceStokBB = async (kodeBB, qty) => {
   }
 };
 
-//Hitung banyak BB yang Status Need Restock
-exports.countNeedRestock = async () => {
-  const count = await BB.countDocuments({ status: STATUS_NEED_RESTOCK });
-  return count;
-};
+//Hitung banyak BB dengan status tertentu
+exports.countStatus = async (req, res) => {
+  try {
+    const needRestock = await BB.countDocuments({ status: STATUS_NEED_RESTOCK });
+    const outOfStock = await BB.countDocuments({ status: STATUS_OUT_OF_STOCK });
+    const safe = await BB.countDocuments({ status: STATUS_SAFE });
 
-//Hitung banyak BB yang Status Safe
-exports.countSafe = async () => {
-  const count = await BB.countDocuments({ status: STATUS_SAFE });
-  return count;
-};
-
-//Hitung banyak BB yang Status Out of Stock
-exports.countOutOfStock = async () => {
-  const count = await BB.countDocuments({ status: STATUS_OUT_OF_STOCK });
-  return count;
+    res.status(200).json({ needRestock, outOfStock, safe });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };

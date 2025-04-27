@@ -78,4 +78,11 @@ bbSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model("BB", bbSchema);
+const BB = mongoose.model("BB", bbSchema);
+
+module.exports = {
+  BB,
+  STATUS_SAFE,
+  STATUS_NEED_RESTOCK,
+  STATUS_OUT_OF_STOCK,
+};
