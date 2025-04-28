@@ -91,6 +91,7 @@ penjualanSchema.methods.hitungPPNTotalItem = function () {
 //Fungsi untuk menghitung total penjualan untuk satu invoice
 penjualanSchema.methods.hitungTotalPenjualan = function () {
   let total = 0;
+  let ppnPenjualan = 0;
 
   // Hitung total
   this.detailPenjualan.forEach((item) => {
@@ -99,6 +100,7 @@ penjualanSchema.methods.hitungTotalPenjualan = function () {
   });
 
   // Tambahkan PPN ke total
+  this.ppnPenjualan = ppnPenjualan;
   this.totalPenjualan += ppnPenjualan;
 };
 

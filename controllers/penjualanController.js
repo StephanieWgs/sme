@@ -51,8 +51,6 @@ exports.getPenjualanById = async (req, res) => {
 
 // Update penjualan
 exports.updatePenjualan = async (req, res) => {
-  console.log("Received data:", req.body); // Menampilkan data yang diterima
-
   try {
     const { id } = req.params;
     let penjualan = await Penjualan.findById(id);

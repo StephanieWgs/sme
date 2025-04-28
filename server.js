@@ -7,7 +7,6 @@ const cors = require("cors");
 const http = require("http");
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 require("dotenv").config();
 
 const BBRoutes = require("./routes/BBRoutes");

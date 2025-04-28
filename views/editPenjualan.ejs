@@ -505,13 +505,14 @@
       const tglPenjualan = document.getElementById("tglPenjualan").value;
       const kodeCustomer = document.getElementById("kodeCustomer").value;
 
-      // Hitung total PPN dan total penjualan
+      // Hitung total PPN dan total penjualan berdasarkan item yang ada
       let ppnPenjualan = 0;
       let subtotalPenjualan = 0;
 
+      // Hitung total dari nilai yang sudah ada di array detailPenjualan
       detailPenjualan.forEach((item) => {
         subtotalPenjualan += item.subtotal;
-        ppnPenjualan += item.ppnItem || 0;
+        ppnPenjualan += item.ppnItem || 0; // Gunakan ppnItem yang sudah dihitung
       });
 
       const totalPenjualan = subtotalPenjualan + ppnPenjualan;
@@ -525,10 +526,10 @@
           kodeBB: item.kodeBB,
           hargaJual: item.hargaJual,
           qty: item.qty,
-          diskonItem: item.diskonItem || 0,
-          tipeDiskon: item.tipeDiskon || "nominal",
-          isPPNActive: item.isPPNActive || false,
-          ppnItem: item.ppnItem || 0,
+          diskonItem: item.diskonItem,
+          tipeDiskon: item.tipeDiskon,
+          isPPNActive: item.isPPNActive,
+          ppnItem: item.ppnItem, // Gunakan nilai ppnItem yang sudah ada
           subtotal: item.subtotal,
         })),
         ppnPenjualan,
@@ -539,8 +540,6 @@
       if (!noInv || !tglPenjualan || !kodeCustomer || detailPenjualan.length === 0) {
         throw new Error("Harap lengkapi semua field yang diperlukan");
       }
-
-      console.log("Penjualan Data:", JSON.stringify(penjualanData));
 
       const response = await fetch(`/api/penjualan/${penjualanId}`, {
         method: "PUT",
@@ -562,6 +561,7 @@
       console.error("Error:", error);
     }
   }
+
   document.addEventListener("DOMContentLoaded", function () {
     loadBarang();
     loadCustomer();
