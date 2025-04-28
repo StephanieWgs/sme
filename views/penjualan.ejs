@@ -10,7 +10,7 @@
     <thead>
       <tr>
         <th scope="col" class="text-center" style="width: 50px">No.</th>
-        <th scope="col">Tanggal</th>
+        <th scope="col" style="width: 150px">Tanggal</th>
         <th scope="col" style="width: 150px">Invoice</th>
         <th scope="col">Customer</th>
         <th scope="col" style="width: 150px">Total</th>
@@ -61,7 +61,7 @@
         const data = await response.json();
         const modalHapus = bootstrap.Modal.getInstance(document.getElementById("modalHapus"));
         modalHapus.hide();
-        loadCustomers();
+        load();
       }
     } catch (error) {
       console.error(error);
@@ -87,15 +87,22 @@
       // Jika ada customer
       list.innerHTML = data
         .map((penjualan, index) => {
+          // Format tanggal agar lebih rapi
+          const tglFormatted = new Date(penjualan.tglPenjualan).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          });
+
           return `
               <tr>
                 <td class="text-center">${index + 1}</td>
-                <td>${penjualan.tglPenjualan}</td>
+                <td>${tglFormatted}</td>
                 <td>${penjualan.noInv}</td>
                 <td>${penjualan.kodeCustomer}</td>
                 <td>Rp ${penjualan.totalPenjualan}</td>
                 <td class="text-center">
-                  <button class="btn btn-warning btn-sm" onclick="window.location.href='/tambahPenjualan/${penjualan._id}')">
+                  <button class="btn btn-warning btn-sm" onclick="window.location.href='/editPenjualan/${penjualan._id}'">
                     <i class="bi bi-pencil"></i> Edit
                   </button>
                   <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${penjualan._id}')">

@@ -168,28 +168,20 @@
   </div>
 </div>
 
-<div class="row mt-3">
+<div class="row mt-3 flex-row-reverse">
   <div class="col-md-4">
-    <div class="card">
+    <div class="card" style="height: 120px">
       <div class="card-body">
-        <h6 class="card-title">Diskon</h6>
-        <h5 class="card-subtitle mt-2">Rp</h5>
+        <h6 class="card-title mt-2">Total</h6>
+        <h5 class="card-subtitle mt-3" id="totalPenjualan">Rp</h5>
       </div>
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card">
+    <div class="card" style="height: 120px">
       <div class="card-body">
-        <h6 class="card-title">PPN</h6>
-        <h5 class="card-subtitle mt-2">Rp</h5>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="card-title">Total</h6>
-        <h5 class="card-subtitle mt-2">Rp</h5>
+        <h6 class="card-title mt-2">PPN</h6>
+        <h5 class="card-subtitle mt-3" id="ppnPenjualan">Rp</h5>
       </div>
     </div>
   </div>
@@ -200,6 +192,9 @@
 </div>
 
 <script>
+  // Simpan barang ke dalam array sementara untuk detailPenjualan
+  let detailPenjualan = [];
+
   // Opsi untuk customer
   async function loadCustomer() {
     try {
@@ -253,9 +248,6 @@
       console.error(error);
     }
   }
-
-  // Simpan barang ke dalam array sementara untuk detailPenjualan
-  let detailPenjualan = [];
 
   // Fungsi untuk menampilkan modal tambah
   async function showAddModal() {
@@ -326,13 +318,14 @@
     detailPenjualan.push(barangBaru);
     // Update tampilan list barang (dalam tabel)
     tampilkanBarang();
+    updateSummaryCards();
 
     document.getElementById("kodeBB").value = "";
     document.getElementById("qty").value = "";
     document.getElementById("hargaJual").value = "";
     document.getElementById("diskonItem").value = "";
     document.getElementById("tipeDiskon").value = "nominal";
-    document.getElementById("isPPNActive").value = "false";
+    document.getElementById("isPPNActive").value = "true";
 
     // Menutup modal setelah barang berhasil ditambah
     const modal = document.getElementById("modalTambah");
@@ -340,12 +333,65 @@
     modalInstance.hide(); // Menutup modal
   }
 
+  // Fungsi untuk mengedit barang
+  async function edit() {
+    // Ambil nilai dari input form
+    const kodeBB = document.getElementById("editKodeBB").value;
+    const qty = document.getElementById("editQty").value;
+    const hargaJual = document.getElementById("editHargaJual").value;
+    const diskonItem = document.getElementById("editDiskonItem").value;
+    const tipeDiskon = document.getElementById("editTipeDiskon").value;
+    const isPPNActive = document.getElementById("editIsPPNActive").value === "true"; // Mengonversi string ke boolean
+
+    // Hitung subtotal
+    let subtotal = parseFloat(hargaJual) * parseInt(qty);
+
+    // Hitung diskon jika tipe diskon nominal atau persen
+    let diskon = 0;
+    if (tipeDiskon === "persen") {
+      diskon = (diskonItem / 100) * subtotal;
+    } else {
+      diskon = parseFloat(diskonItem); // Nominal
+    }
+
+    // Hitung PPN jika aktif
+    let ppn = 0;
+    if (isPPNActive) {
+      ppn = subtotal * 0.11;
+    }
+
+    // Hitung total setelah diskon
+    let total = subtotal - diskon;
+
+    const barangEdit = {
+      kodeBB,
+      hargaJual: parseFloat(hargaJual),
+      qty: parseInt(qty),
+      diskonItem: parseFloat(diskonItem),
+      tipeDiskon,
+      isPPNActive,
+      ppnItem: ppn,
+      subtotal: total,
+    };
+
+    // Tambahkan barang ke detailPenjualan
+    detailPenjualan[currentIndex] = barangEdit;
+    // Update tampilan list barang (dalam tabel)
+    tampilkanBarang();
+    updateSummaryCards();
+
+    // Menutup modal setelah barang berhasil dihapus
+    const modal = document.getElementById("modalEdit");
+    const modalInstance = bootstrap.Modal.getInstance(modal);
+    modalInstance.hide(); // Menutup modal
+  }
   // Fungsi untuk menghapus barang
   async function hapus(index) {
     // Hapus barang dari array
     detailPenjualan.splice(index, 1);
 
     tampilkanBarang();
+    updateSummaryCards();
     // Menutup modal setelah barang berhasil dihapus
     const modal = document.getElementById("modalHapus");
     const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -403,8 +449,93 @@
     }
   }
 
+  // Fungsi untuk mengupdate card PPN dan Total
+  function updateSummaryCards() {
+    // Hitung total PPN dan subtotal
+    let totalPPN = 0;
+    let subtotal = 0;
+
+    detailPenjualan.forEach((item) => {
+      subtotal += item.subtotal;
+      if (item.isPPNActive) {
+        totalPPN += item.subtotal * 0.11; // PPN 11%
+      }
+    });
+
+    // Hitung total akhir
+    const total = subtotal + totalPPN;
+
+    // Update card
+    document.getElementById("ppnPenjualan").textContent = `Rp ${totalPPN.toLocaleString()}`;
+    document.getElementById("totalPenjualan").textContent = `Rp ${total.toLocaleString()}`;
+  }
+
+  // Fungsi untuk simpan penjualan
+  async function simpan() {
+    try {
+      // Ambil nilai dari form input
+      const noInv = document.getElementById("noInv").value;
+      const tglPenjualan = document.getElementById("tglPenjualan").value;
+      const kodeCustomer = document.getElementById("kodeCustomer").value;
+
+      // Hitung total PPN dan total penjualan
+      let ppnPenjualan = 0;
+      let totalPenjualan = 0;
+
+      detailPenjualan.forEach((item) => {
+        totalPenjualan += item.subtotal;
+        ppnPenjualan += item.ppnItem || 0;
+      });
+
+      totalPenjualan += ppnPenjualan;
+
+      // Pastikan semua field required ada
+      const penjualanData = {
+        noInv,
+        tglPenjualan: new Date(tglPenjualan),
+        kodeCustomer,
+        detailPenjualan: detailPenjualan.map((item) => ({
+          kodeBB: item.kodeBB,
+          hargaJual: item.hargaJual,
+          qty: item.qty,
+          diskonItem: item.diskonItem || 0,
+          tipeDiskon: item.tipeDiskon || "nominal",
+          isPPNActive: item.isPPNActive || false,
+          ppnItem: item.ppnItem || 0,
+          subtotal: item.subtotal,
+        })),
+        ppnPenjualan,
+        totalPenjualan,
+      };
+
+      // Validasi data sebelum dikirim
+      if (!noInv || !tglPenjualan || !kodeCustomer || detailPenjualan.length === 0) {
+        throw new Error("Harap lengkapi semua field yang diperlukan");
+      }
+
+      const response = await fetch("/api/penjualan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(penjualanData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Gagal menyimpan penjualan");
+      }
+
+      // Redirect setelah berhasil simpan
+      window.location.href = "/penjualan";
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
   document.addEventListener("DOMContentLoaded", function () {
     loadBarang();
     loadCustomer();
+    updateSummaryCards();
   });
 </script>

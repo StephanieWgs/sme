@@ -56,21 +56,7 @@ const pembelianSchema = new mongoose.Schema({
       },
     },
   ],
-  diskonPembelian: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  tipeDiskonPembelian: {
-    type: String,
-    enum: ["persen", "nominal"],
-    default: "nominal",
-  },
   ppnPembelian: {
-    type: Number,
-    required: true,
-  },
-  biayaLain: {
     type: Number,
     required: true,
   },
@@ -120,25 +106,16 @@ pembelianSchema.methods.hitungTotalPembelian = function () {
   // Hitung total
   this.detailPembelian.forEach((item) => {
     total += item.subtotal;
+    ppnPembelian += item.ppnItem || 0;
   });
 
-  // Hitung total diskon dan PPN secara keseluruhan
-  if (this.tipeDiskonPembelian === "persen") {
-    const diskonPersen = (total * this.diskonPembelian) / 100;
-    total -= diskonPersen;
-  } else {
-    total -= this.diskonPembelian;
-  }
-  total += this.ppnPembelian; // Tambahkan PPN total
-  total += this.biayaLain; // Tambahkan biaya lain (misal ongkir)
-
-  this.totalPembelian = total;
+  // Tambahkan PPN ke total
+  this.totalPembelian += ppnPembelian;
 };
 
 pembelianSchema.methods.prosesPerhitungan = function () {
   this.hitungSubtotalItemSetelahDiskon();
   this.hitungPPNTotalItem();
-  this.hitungPPNTotal();
   this.hitungTotalPembelian();
 };
 

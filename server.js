@@ -21,7 +21,7 @@ const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middlewares/authMiddleware"); // Import authMiddleware
 
 //Websocket
-const { initWebSocket } = require("./websocket"); 
+const { initWebSocket } = require("./websocket");
 const server = http.createServer(app);
 initWebSocket(server);
 
@@ -112,7 +112,7 @@ app.get("/tambahPenjualan", (req, res) => {
 });
 
 // Rute untuk edit penjualan
-app.get("/editPenjualan", (req, res) => {
+app.get("/editPenjualan/:id", (req, res) => {
   res.render("layout", {
     title: "Edit Penjualan",
     body: "editPenjualan",
@@ -139,7 +139,7 @@ app.get("/tambahPembelian", (req, res) => {
 });
 
 // Rute untuk edit pembelian
-app.get("/editPembelian", (req, res) => {
+app.get("/editPembelian/:id", (req, res) => {
   res.render("layout", {
     title: "Edit Pembelian",
     body: "editPembelian",
