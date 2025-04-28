@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const customerController = require("../controllers/customerController");
+const validateFields = require("../middlewares/validateMiddleware");
+
+const customerFields = ["kodeCustomer", "namaCustomer", "alamatCustomer", "noHPCustomer", "emailCustomer"];
 
 // Routes untuk mendapatkan semua customer
 router.get("/", customerController.getAllCustomer);
@@ -9,10 +12,10 @@ router.get("/", customerController.getAllCustomer);
 router.get("/:id", customerController.getCustomerById);
 
 // Routes untuk membuat customer
-router.post("/", customerController.createCustomer);
+router.post("/", validateFields(customerFields), customerController.createCustomer);
 
 // Routes untuk memperbarui customer
-router.put("/:id", customerController.updateCustomer);
+router.put("/:id", validateFields(customerFields), customerController.updateCustomer);
 
 // Routes untuk menghapus customer
 router.delete("/:id", customerController.deleteCustomer);

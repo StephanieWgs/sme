@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const BBController = require("../controllers/BBController");
+const validateFields = require("../middlewares/validateMiddleware");
+
+const bbFields = ["kodeBB", "namaBB", "jenisBB", "unitBB", "stok", "avgLeadTime", "maxLeadTime", "avgUsage", "maxUsage"];
 
 // Routes untuk mendapatkan jumlah BB dengan status tertentu
 router.get("/count-status", BBController.countStatus);
@@ -12,10 +15,10 @@ router.get("/", BBController.getAllBB);
 router.get("/:id", BBController.getBBById);
 
 // Routes untuk membuat BB
-router.post("/", BBController.createBB);
+router.post("/", validateFields(bbFields), BBController.createBB);
 
 // Routes untuk memperbarui BB
-router.put("/:id", BBController.updateBB);
+router.put("/:id", validateFields(bbFields), BBController.updateBB);
 
 // Routes untuk menghapus BB
 router.delete("/:id", BBController.deleteBB);

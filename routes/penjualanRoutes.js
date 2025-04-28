@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const penjualanController = require("../controllers/penjualanController");
+const validateFields = require("../middlewares/validateMiddleware");
+
+const penjualanFields = ["noInv", "tglPenjualan", "kodeCustomer", "detailPenjualan", "ppnPenjualan", "totalPenjualan"];
 
 // Routes untuk mendapatkan semua penjualan
 router.get("/", penjualanController.getAllPenjualan);
@@ -9,10 +12,10 @@ router.get("/", penjualanController.getAllPenjualan);
 router.get("/:id", penjualanController.getPenjualanById);
 
 // Routes untuk membuat penjualan
-router.post("/", penjualanController.createPenjualan);
+router.post("/", validateFields(penjualanFields), penjualanController.createPenjualan);
 
 // Routes untuk memperbarui penjualan
-router.put("/:id", penjualanController.updatePenjualan);
+router.put("/:id", validateFields(penjualanFields), penjualanController.updatePenjualan);
 
 // Routes untuk menghapus penjualan
 router.delete("/:id", penjualanController.deletePenjualan);
