@@ -88,7 +88,7 @@
       list.innerHTML = data
         .map((pembelian, index) => {
           // Format tanggal agar lebih rapi
-          const tglFormatted = new Date(loadPembelian.tglPembelian).toLocaleDateString("id-ID", {
+          const tglFormatted = new Date(pembelian.tglPembelian).toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "long",
             year: "numeric",

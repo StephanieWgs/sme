@@ -88,20 +88,30 @@ penjualanSchema.methods.hitungPPNTotalItem = function () {
   });
 };
 
-//Fungsi untuk menghitung total penjualan untuk satu invoice
-penjualanSchema.methods.hitungTotalPenjualan = function () {
-  let total = 0;
-  let ppnPenjualan = 0;
+// Fungsi untuk menghitung PPN per item DAN total PPN sekaligus
+penjualanSchema.methods.hitungPPNTotalItem = function () {
+  let ppnTotal = 0; // Initialize total PPN
 
-  // Hitung total
   this.detailPenjualan.forEach((item) => {
-    total += item.subtotal;
-    ppnPenjualan += item.ppnItem || 0;
+    const ppnItem = item.isPPNActive ? Math.floor(item.subtotal * 0.11) : 0;
+    item.ppnItem = ppnItem;
+    ppnTotal += ppnItem; // Accumulate total PPN
   });
 
-  // Tambahkan PPN ke total
-  this.ppnPenjualan = ppnPenjualan;
-  this.totalPenjualan += ppnPenjualan;
+  this.ppnPenjualan = ppnTotal; // Set total PPN for the invoice
+};
+
+// Fungsi untuk menghitung total penjualan (termasuk PPN)
+penjualanSchema.methods.hitungTotalPenjualan = function () {
+  let subtotal = 0;
+
+  // Sum subtotals (exclude PPN)
+  this.detailPenjualan.forEach((item) => {
+    subtotal += item.subtotal;
+  });
+
+  // Total = Subtotal + PPN (ppnPenjualan already calculated in hitungPPNTotalItem)
+  this.totalPenjualan = subtotal + this.ppnPenjualan;
 };
 
 penjualanSchema.methods.prosesPerhitungan = function () {
