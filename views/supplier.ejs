@@ -126,6 +126,12 @@
     function showAddModal() {
       new bootstrap.Modal(document.getElementById("modalTambah")).show();
     }
+
+    // Fungsi untuk menampilkan modal hapus Supplier
+    function showDeleteModal(id) {
+      currentId = id;
+      new bootstrap.Modal(document.getElementById("modalHapus")).show();
+    }
   
     /// Fungsi untuk menampilkan modal edit Supplier
     async function showEditModal(id) {
@@ -158,12 +164,6 @@
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    }
-  
-    // Fungsi untuk menampilkan modal hapus Supplier
-    function showDeleteModal(id) {
-      currentId = id;
-      new bootstrap.Modal(document.getElementById("modalHapus")).show();
     }
   
     // Tambah Supplier
@@ -238,7 +238,7 @@
         console.error(error);
       }
     }
-  
+
     // HapusSupplier
     async function hapusSupplier() {
       try {

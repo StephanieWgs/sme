@@ -12,15 +12,13 @@ const pembelianSchema = new mongoose.Schema({
     required: true,
   },
   kodeSupplier: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "supplier",
+    type: String,
     required: true,
   },
   detailPembelian: [
     {
       kodeBB: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "BB",
+        type: String,
         required: true,
       },
       hargaBeli: {
@@ -82,35 +80,31 @@ pembelianSchema.methods.hitungSubtotalItemSetelahDiskon = function () {
   });
 };
 
-//Fungsi untuk menghitung ppn total per item
+//Fungsi untuk menghitung ppn per item DAN total ppn
 pembelianSchema.methods.hitungPPNTotalItem = function () {
+  let ppnTotal = 0; // Initialize total PPN
+
   this.detailPembelian.forEach((item) => {
     const ppnItem = item.isPPNActive ? Math.floor(item.subtotal * 0.11) : 0;
     item.ppnItem = ppnItem;
+    ppnTotal += ppnItem; // Accumulate total PPN
   });
+
+  this.ppnPembelian = ppnTotal; // Set total PPN for the invoice
 };
 
-//Fungsi untuk menghitung ppn total untuk satu invoice
-pembelianSchema.methods.hitungPPNTotal = function () {
-  let ppnTotal = 0;
-  this.detailPembelian.forEach((item) => {
-    ppnTotal += item.ppnItem;
-  });
-  this.ppnPembelian = ppnTotal;
-};
 
-//Fungsi untuk menghitung total pembelian untuk satu invoice
+//Fungsi untuk menghitung total pembelian (termasuk PPN)
 pembelianSchema.methods.hitungTotalPembelian = function () {
-  let total = 0;
+  let subtotal = 0;
 
-  // Hitung total
+  // Sum subtotals (exclude PPN)
   this.detailPembelian.forEach((item) => {
-    total += item.subtotal;
-    ppnPembelian += item.ppnItem || 0;
+    subtotal += item.subtotal;
   });
 
-  // Tambahkan PPN ke total
-  this.totalPembelian += ppnPembelian;
+  // Total = Subtotal + PPN (already calculated in hitungPPNTotalItem)
+  this.totalPembelian = subtotal + this.ppnPembelian;
 };
 
 pembelianSchema.methods.prosesPerhitungan = function () {
