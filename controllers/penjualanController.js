@@ -1,5 +1,6 @@
 const Penjualan = require("../models/penjualan");
 const { addStokBB, reduceStokBB } = require("../controllers/BBController");
+const { sendNotification } = require("../websocket");
 
 // Create pembelian
 exports.createPenjualan = async (req, res) => {
@@ -11,6 +12,9 @@ exports.createPenjualan = async (req, res) => {
     for (const item of savedPenjualan.detailPenjualan) {
       await reduceStokBB(item.kodeBB, item.qty);
     }
+
+    // Kirim notifikasi
+    sendNotification("Data penjualan berhasil ditambahkan");
 
     res.status(201).json({
       message: "Penjualan created successfully",
@@ -69,6 +73,9 @@ exports.updatePenjualan = async (req, res) => {
       await addStokBB(item.kodeBB, item.qty);
     }
 
+    // Kirim notifikasi
+    sendNotification("Data penjualan berhasil diupdate");
+
     res.status(200).json({
       message: "Penjualan updated successfully",
       updatedPenjualan,
@@ -91,6 +98,9 @@ exports.deletePenjualan = async (req, res) => {
     }
 
     const deletedPenjualan = await Penjualan.findByIdAndDelete(id);
+
+    // Kirim notifikasi
+    sendNotification("Data penjualan berhasil dihapus");
 
     res.status(200).json({
       message: "Penjualan deleted successfully",

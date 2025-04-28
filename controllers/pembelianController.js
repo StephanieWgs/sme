@@ -1,5 +1,6 @@
 const Pembelian = require("../models/pembelian");
 const { addStokBB, reduceStokBB } = require("./BBController");
+const { sendNotification } = require("../websocket");
 
 // Create pembelian
 exports.createPembelian = async (req, res) => {
@@ -11,6 +12,9 @@ exports.createPembelian = async (req, res) => {
     for (const item of savedPembelian.detailPembelian) {
       await addStokBB(item.kodeBB, item.qty);
     }
+
+    // Kirim notifikasi
+    sendNotification("Data pembelian berhasil ditambahkan");
 
     res.status(201).json({
       message: "Pembelian created successfully",
@@ -69,6 +73,9 @@ exports.updatePembelian = async (req, res) => {
       await addStokBB(item.kodeBB, item.qty);
     }
 
+    // Kirim notifikasi
+    sendNotification("Data pembelian berhasil diupdate");
+
     res.status(200).json({
       message: "Pembelian updated successfully",
       updatedPembelian,
@@ -91,6 +98,9 @@ exports.deletePembelian = async (req, res) => {
     }
 
     const deletedPembelian = await Pembelian.findByIdAndDelete(id);
+
+    // Kirim notifikasi
+    sendNotification("Data pembelian berhasil dihapus");
 
     res.status(200).json({
       message: "Pembelian deleted successfully",

@@ -1,4 +1,5 @@
 const { BB, STATUS_SAFE, STATUS_NEED_RESTOCK, STATUS_OUT_OF_STOCK } = require("../models/BB");
+const { sendNotification } = require("../websocket");
 
 //Create BB
 exports.createBB = async (req, res) => {
@@ -25,6 +26,9 @@ exports.createBB = async (req, res) => {
     });
 
     const savedBB = await newBB.save();
+
+    // Kirim notifikasi
+    sendNotification(`Produk ${namaBB} berhasil ditambahkan`);
 
     res.status(201).json({
       message: "BB created successfully",
@@ -89,6 +93,9 @@ exports.updateBB = async (req, res) => {
     // Simpan perubahan ke database
     await updatedBB.save();
 
+    // Kirim notifikasi
+    sendNotification("Data produk berhasil diupdate");
+
     res.status(200).json({
       message: "BB updated successfully",
       updatedBB,
@@ -104,6 +111,10 @@ exports.deleteBB = async (req, res) => {
     const { id } = req.params;
     const deletedBB = await BB.findByIdAndDelete(id);
     if (!deletedBB) return res.status(404).json({ error: "BB not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data produk berhasil dihapus");
+
     res.status(200).json({
       message: "BB deleted successfully",
       deletedBB,

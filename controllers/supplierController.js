@@ -1,4 +1,5 @@
 const supplier = require("../models/supplier");
+const { sendNotification } = require("../websocket");
 
 // Create supplier
 exports.createSupplier = async (req, res) => {
@@ -6,6 +7,10 @@ exports.createSupplier = async (req, res) => {
     const { kodeSupplier, namaSupplier, alamatSupplier, noHPSupplier, emailSupplier } = req.body;
     const newSupplier = new supplier({ kodeSupplier, namaSupplier, alamatSupplier, noHPSupplier, emailSupplier });
     const savedSupplier = await newSupplier.save();
+
+    // Kirim notifikasi
+    sendNotification(`Supplier ${namaSupplier} berhasil ditambahkan`);
+
     res.status(201).json({
       message: "Supplier created successfully",
       savedSupplier,
@@ -44,6 +49,10 @@ exports.updateSupplier = async (req, res) => {
     const { kodeSupplier, namaSupplier, alamatSupplier, noHPSupplier, emailSupplier } = req.body;
     const updatedSupplier = await supplier.findByIdAndUpdate(id, { kodeSupplier, namaSupplier, alamatSupplier, noHPSupplier, emailSupplier }, { new: true });
     if (!updatedSupplier) return res.status(404).json({ error: "Supplier not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data supplier berhasil diupdate");
+
     res.status(200).json({
       message: "Supplier updated successfully",
       updatedSupplier,
@@ -59,6 +68,10 @@ exports.deleteSupplier = async (req, res) => {
     const { id } = req.params;
     const deletedSupplier = await supplier.findByIdAndDelete(id);
     if (!deletedSupplier) return res.status(404).json({ error: "Supplier not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data supplier berhasil dihapus");
+
     res.status(200).json({
       message: "Supplier deleted successfully",
       deletedSupplier,

@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../config/auth");
+const { sendNotification } = require("../websocket");
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -40,6 +41,10 @@ exports.register = async (req, res) => {
     //Buat user baru
     const user = new User({ username, password: hashedPassword, role });
     const savedUser = await user.save();
+
+    // Kirim notifikasi
+    sendNotification(`User ${username} berhasil ditambahkan`);
+
     res.status(201).json(savedUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -75,6 +80,10 @@ exports.updateUser = async (req, res) => {
     const { username, role } = req.body;
     const updatedUser = await User.findByIdAndUpdate(id, { username, role }, { new: true });
     if (!updatedUser) return res.status(404).json({ error: "User not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data user berhasil diupdate");
+
     res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -87,6 +96,10 @@ exports.deleteUser = async (req, res) => {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
     if (!deletedUser) return res.status(404).json({ error: "User not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data user berhasil dihapus");
+
     res.status(200).json({ message: "User deleted successfully", deletedUser });
   } catch (error) {
     res.status(500).json({ error: error.message });

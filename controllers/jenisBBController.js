@@ -1,4 +1,5 @@
 const JenisBB = require("../models/jenisBB");
+const { sendNotification } = require("../websocket");
 
 // Create jenisBB
 exports.createJenisBB = async (req, res) => {
@@ -6,6 +7,10 @@ exports.createJenisBB = async (req, res) => {
   try {
     const newJenisBB = new JenisBB({ jenisBB });
     const savedJenisBB = await newJenisBB.save();
+
+    // Kirim notifikasi
+    sendNotification(`Jenis produk ${jenisBB} berhasil ditambahkan`);
+
     res.status(201).json({
       message: "JenisBB created successfully",
       savedJenisBB,
@@ -43,6 +48,10 @@ exports.updateJenisBB = async (req, res) => {
     const { jenisBB } = req.body;
     const updatedJenisBB = await JenisBB.findByIdAndUpdate(id, { jenisBB }, { new: true });
     if (!updatedJenisBB) return res.status(404).json({ error: "JenisBB not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data jenis produk berhasil diupdate");
+
     res.status(200).json({
       message: "JenisBB updated successfully",
       updatedJenisBB,
@@ -58,6 +67,10 @@ exports.deleteJenisBB = async (req, res) => {
     const { id } = req.params;
     const deletedJenisBB = await JenisBB.findByIdAndDelete(id);
     if (!deletedJenisBB) return res.status(404).json({ error: "JenisBB not found" });
+
+    // Kirim notifikasi
+    sendNotification("Data jenis produk berhasil dihapus");
+
     res.status(200).json({
       message: "JenisBB deleted successfully",
       deletedJenisBB,

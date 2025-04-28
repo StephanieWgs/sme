@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require("http");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,6 +19,11 @@ const customerRoutes = require("./routes/customerRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 const authMiddleware = require("./middlewares/authMiddleware"); // Import authMiddleware
+
+//Websocket
+const { initWebSocket } = require("./websocket"); 
+const server = http.createServer(app);
+initWebSocket(server);
 
 //Port
 const PORT = process.env.PORT || 5000;
@@ -169,4 +175,4 @@ app.get("/user", authMiddleware, (req, res) => {
 });
 
 //Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
