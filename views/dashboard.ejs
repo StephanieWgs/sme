@@ -27,6 +27,17 @@
   </div>
 </div>
 
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Stok Bahan Baku</h5>
+        <canvas id="stokChart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   async function getStatusSummary() {
     try {
@@ -42,5 +53,38 @@
     }
   }
 
-  window.onload = getStatusSummary;
+  async function getStokData() {
+    try {
+      const response = await fetch("/api/BB");
+      const data = await response.json();
+
+      // Ambil data dari API dan ambil 10 data teratas berdasarkan stok tertinggi 
+      // biar kalau datanya kebanyakan gak terlalu banyak grafiknya
+      const sortedData = data.sort((a, b) => b.stok - a.stok);
+      const top10 = sortedData.slice(0, 10);
+
+      const labels = top10.map(bb => [bb.namaBB, bb.jenisBB]);
+      const stokData = top10.map(bb => bb.stok);
+
+      new Chart("stokChart", {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Jumlah Stok',
+            data: stokData,
+            backgroundColor: 'rgba(13, 110, 253, 0.5)',
+          }]
+        }
+      });
+    } catch (error) {
+      console.error("Gagal mengambil data stok:", error);
+    }
+  }
+
+  window.onload = () => {
+    getStatusSummary();
+    getStokData();
+  };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
